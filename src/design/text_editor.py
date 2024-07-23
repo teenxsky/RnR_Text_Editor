@@ -17,9 +17,9 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
 from PySide6.QtWidgets import (QApplication, QButtonGroup, QFontComboBox, QFrame,
-    QHBoxLayout, QMainWindow, QMenu, QMenuBar,
-    QPushButton, QSizePolicy, QSpacerItem, QSpinBox,
-    QTextEdit, QVBoxLayout, QWidget)
+    QGridLayout, QHBoxLayout, QMainWindow, QMenu,
+    QMenuBar, QPushButton, QSizePolicy, QSpacerItem,
+    QSpinBox, QTextEdit, QVBoxLayout, QWidget)
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -59,6 +59,7 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QPushButton {\n"
+"	color: rgb(84, 84, 84);\n"
 "	border: 0;\n"
 "	border-radius: 5px;\n"
 "	background-color: rgb(244, 244, 244);\n"
@@ -74,6 +75,14 @@ class Ui_MainWindow(object):
 "\n"
 "QPushButton::checked {\n"
 "	color: rgb(10, 75, 230);\n"
+"}\n"
+"\n"
+"QWidget#widget_color_picker {\n"
+"	border-radius: 5px;\n"
+"}\n"
+"\n"
+"QWidget#widget_color {\n"
+"	border-radius: 3px;\n"
 "}")
         self.verticalLayout = QVBoxLayout(self.central_widget)
         self.verticalLayout.setSpacing(0)
@@ -93,34 +102,86 @@ class Ui_MainWindow(object):
         self.horizontalLayout_3.setContentsMargins(10, 5, 10, 5)
         self.combo_box_fonts = QFontComboBox(self.frame_tools)
         self.combo_box_fonts.setObjectName(u"combo_box_fonts")
+        font = QFont()
+        font.setPointSize(12)
+        font.setBold(False)
+        font.setItalic(False)
+        self.combo_box_fonts.setFont(font)
         self.combo_box_fonts.setStyleSheet(u"QFontComboBox {\n"
+"	color: rgb(84, 84, 84);\n"
 "	background-color: rgb(244, 244, 244);\n"
 "	border-radius: 5px;	\n"
-"	border: 1px solid rgb(214, 214, 214);\n"
+"	border: 1px solid rgb(234, 234, 234);\n"
+"}\n"
+"\n"
+"QFontComboBox::hover {\n"
+"	background-color: rgb(234, 234, 234);\n"
+"}\n"
+"\n"
+"QFontComboBox::drop-down {\n"
+"    subcontrol-origin: padding;\n"
+"    subcontrol-position: top right;\n"
+"    width: 20px;\n"
+"    border-top-right-radius: 5px;\n"
+"    border-bottom-right-radius: 5px;\n"
 "}")
+        self.combo_box_fonts.setEditable(False)
+        self.combo_box_fonts.setMaxVisibleItems(5)
 
         self.horizontalLayout_3.addWidget(self.combo_box_fonts)
 
         self.spin_box_size = QSpinBox(self.frame_tools)
         self.spin_box_size.setObjectName(u"spin_box_size")
+        font1 = QFont()
+        font1.setPointSize(12)
+        self.spin_box_size.setFont(font1)
         self.spin_box_size.setStyleSheet(u"QSpinBox {\n"
+"	color: rgb(84, 84, 84);\n"
 "	padding-right: 5px;\n"
-"	border: 1px solid rgb(214, 214, 214);\n"
+"	border: 1px solid rgb(234, 234, 234);\n"
 "	border-radius: 5px;\n"
 "	background-color: rgb(244, 244, 244);\n"
 "}\n"
 "\n"
+"QSpinBox::hover {\n"
+"	background-color: rgb(234, 234, 234);\n"
+"}\n"
+"\n"
 "QSpinBox::up-button {\n"
 "	subcontrol-origin: border;\n"
+"	border: 0;\n"
+"	width: 20px;\n"
 "}\n"
 "\n"
 "QSpinBox::down-button {\n"
 "	subcontrol-origin: border;\n"
+"	border: 0;\n"
+"	width: 20px;\n"
 "}\n"
 "")
         self.spin_box_size.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
 
         self.horizontalLayout_3.addWidget(self.spin_box_size)
+
+        self.widget_color_picker = QWidget(self.frame_tools)
+        self.widget_color_picker.setObjectName(u"widget_color_picker")
+        self.widget_color_picker.setMinimumSize(QSize(20, 20))
+        self.widget_color_picker.setMaximumSize(QSize(20, 20))
+        self.widget_color_picker.setStyleSheet(u"")
+        self.gridLayout = QGridLayout(self.widget_color_picker)
+        self.gridLayout.setSpacing(0)
+        self.gridLayout.setObjectName(u"gridLayout")
+        self.gridLayout.setContentsMargins(4, 4, 4, 4)
+        self.widget_color = QWidget(self.widget_color_picker)
+        self.widget_color.setObjectName(u"widget_color")
+        self.widget_color.setMinimumSize(QSize(12, 12))
+        self.widget_color.setMaximumSize(QSize(12, 12))
+        self.widget_color.setStyleSheet(u"background-color: black;")
+
+        self.gridLayout.addWidget(self.widget_color, 0, 0, 1, 1)
+
+
+        self.horizontalLayout_3.addWidget(self.widget_color_picker)
 
         self.frame_text = QFrame(self.frame_tools)
         self.frame_text.setObjectName(u"frame_text")
@@ -137,9 +198,10 @@ class Ui_MainWindow(object):
         self.button_bold.setObjectName(u"button_bold")
         self.button_bold.setMinimumSize(QSize(20, 20))
         self.button_bold.setMaximumSize(QSize(20, 20))
-        font = QFont()
-        font.setBold(True)
-        self.button_bold.setFont(font)
+        font2 = QFont()
+        font2.setPointSize(12)
+        font2.setBold(True)
+        self.button_bold.setFont(font2)
         self.button_bold.setCheckable(True)
 
         self.horizontalLayout.addWidget(self.button_bold)
@@ -148,9 +210,10 @@ class Ui_MainWindow(object):
         self.button_italic.setObjectName(u"button_italic")
         self.button_italic.setMinimumSize(QSize(20, 20))
         self.button_italic.setMaximumSize(QSize(20, 20))
-        font1 = QFont()
-        font1.setItalic(True)
-        self.button_italic.setFont(font1)
+        font3 = QFont()
+        font3.setPointSize(12)
+        font3.setItalic(True)
+        self.button_italic.setFont(font3)
         self.button_italic.setCheckable(True)
 
         self.horizontalLayout.addWidget(self.button_italic)
@@ -159,10 +222,11 @@ class Ui_MainWindow(object):
         self.button_underline.setObjectName(u"button_underline")
         self.button_underline.setMinimumSize(QSize(20, 20))
         self.button_underline.setMaximumSize(QSize(20, 20))
-        font2 = QFont()
-        font2.setUnderline(True)
-        font2.setStrikeOut(False)
-        self.button_underline.setFont(font2)
+        font4 = QFont()
+        font4.setPointSize(12)
+        font4.setUnderline(True)
+        font4.setStrikeOut(False)
+        self.button_underline.setFont(font4)
         self.button_underline.setCheckable(True)
 
         self.horizontalLayout.addWidget(self.button_underline)
@@ -188,7 +252,9 @@ class Ui_MainWindow(object):
         self.button_left.setObjectName(u"button_left")
         self.button_left.setMinimumSize(QSize(20, 20))
         self.button_left.setMaximumSize(QSize(20, 20))
-        self.button_left.setFont(font)
+        font5 = QFont()
+        font5.setBold(True)
+        self.button_left.setFont(font5)
         self.button_left.setCheckable(True)
 
         self.horizontalLayout_2.addWidget(self.button_left)
@@ -198,7 +264,7 @@ class Ui_MainWindow(object):
         self.button_center.setObjectName(u"button_center")
         self.button_center.setMinimumSize(QSize(20, 20))
         self.button_center.setMaximumSize(QSize(20, 20))
-        self.button_center.setFont(font)
+        self.button_center.setFont(font5)
         self.button_center.setCheckable(True)
 
         self.horizontalLayout_2.addWidget(self.button_center)
@@ -208,7 +274,7 @@ class Ui_MainWindow(object):
         self.button_right.setObjectName(u"button_right")
         self.button_right.setMinimumSize(QSize(20, 20))
         self.button_right.setMaximumSize(QSize(20, 20))
-        self.button_right.setFont(font)
+        self.button_right.setFont(font5)
         self.button_right.setCheckable(True)
 
         self.horizontalLayout_2.addWidget(self.button_right)
@@ -218,7 +284,7 @@ class Ui_MainWindow(object):
         self.button_justify.setObjectName(u"button_justify")
         self.button_justify.setMinimumSize(QSize(20, 20))
         self.button_justify.setMaximumSize(QSize(20, 20))
-        self.button_justify.setFont(font)
+        self.button_justify.setFont(font5)
         self.button_justify.setCheckable(True)
 
         self.horizontalLayout_2.addWidget(self.button_justify)
@@ -226,15 +292,15 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_3.addWidget(self.frame_align)
 
-        self.button_intervals = QPushButton(self.frame_tools)
-        self.button_intervals.setObjectName(u"button_intervals")
-        self.button_intervals.setMinimumSize(QSize(20, 20))
-        self.button_intervals.setMaximumSize(QSize(20, 20))
-        self.button_intervals.setStyleSheet(u"QPushButton::checked {\n"
+        self.button_spacing = QPushButton(self.frame_tools)
+        self.button_spacing.setObjectName(u"button_spacing")
+        self.button_spacing.setMinimumSize(QSize(20, 20))
+        self.button_spacing.setMaximumSize(QSize(20, 20))
+        self.button_spacing.setStyleSheet(u"QPushButton::checked {\n"
 "	background-color: rgb(234, 234, 234);\n"
 "}")
 
-        self.horizontalLayout_3.addWidget(self.button_intervals)
+        self.horizontalLayout_3.addWidget(self.button_spacing)
 
         self.horizontalSpacer = QSpacerItem(40, 20, QSizePolicy.Policy.Expanding, QSizePolicy.Policy.Minimum)
 
@@ -344,9 +410,9 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.button_justify.setText("")
 #if QT_CONFIG(tooltip)
-        self.button_intervals.setToolTip(QCoreApplication.translate("MainWindow", u"Intervals", None))
+        self.button_spacing.setToolTip(QCoreApplication.translate("MainWindow", u"Spacing", None))
 #endif // QT_CONFIG(tooltip)
-        self.button_intervals.setText("")
+        self.button_spacing.setText("")
         self.menuFile.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
         self.menuEdit.setTitle(QCoreApplication.translate("MainWindow", u"Edit", None))
         self.menuFind.setTitle(QCoreApplication.translate("MainWindow", u"Find", None))

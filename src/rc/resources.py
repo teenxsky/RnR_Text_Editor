@@ -70,6 +70,92 @@ a4,4,0,0,0,0-8Zm\
 ,0,1,0,0,8H216a4\
 ,4,0,0,0,0-8Z\x22/>\
 \x0a</svg>\
+\x00\x00\x02\x87\
+<\
+!DOCTYPE svg PUB\
+LIC \x22-//W3C//DTD\
+ SVG 1.1//EN\x22 \x22h\
+ttp://www.w3.org\
+/Graphics/SVG/1.\
+1/DTD/svg11.dtd\x22\
+>\x0a\x0d<!-- Uploaded\
+ to: SVG Repo, w\
+ww.svgrepo.com, \
+Transformed by: \
+SVG Repo Mixer T\
+ools -->\x0a<svg fi\
+ll=\x22#545454\x22 wid\
+th=\x22800px\x22 heigh\
+t=\x22800px\x22 viewBo\
+x=\x220 0 1024 1024\
+\x22 xmlns=\x22http://\
+www.w3.org/2000/\
+svg\x22 stroke=\x22#54\
+5454\x22>\x0a\x0d<g id=\x22S\
+VGRepo_bgCarrier\
+\x22 stroke-width=\x22\
+0\x22/>\x0a\x0d<g id=\x22SVG\
+Repo_tracerCarri\
+er\x22 stroke-linec\
+ap=\x22round\x22 strok\
+e-linejoin=\x22roun\
+d\x22/>\x0a\x0d<g id=\x22SVG\
+Repo_iconCarrier\
+\x22>\x0a\x0d<path d=\x22M62\
+0.6 562.3l36.2 3\
+6.2L512 743.3 36\
+7.2 598.5l36.2-3\
+6.2L512 670.9l10\
+8.6-108.6zM512 3\
+53.1l108.6 108.6\
+ 36.2-36.2L512 2\
+80.7 367.2 425.5\
+l36.2 36.2L512 3\
+53.1z\x22/>\x0a\x0d</g>\x0a\x0d\
+</svg>\
+\x00\x00\x02\x87\
+<\
+!DOCTYPE svg PUB\
+LIC \x22-//W3C//DTD\
+ SVG 1.1//EN\x22 \x22h\
+ttp://www.w3.org\
+/Graphics/SVG/1.\
+1/DTD/svg11.dtd\x22\
+>\x0a\x0d<!-- Uploaded\
+ to: SVG Repo, w\
+ww.svgrepo.com, \
+Transformed by: \
+SVG Repo Mixer T\
+ools -->\x0a<svg fi\
+ll=\x22#545454\x22 wid\
+th=\x22800px\x22 heigh\
+t=\x22800px\x22 viewBo\
+x=\x220 0 1024 1024\
+\x22 xmlns=\x22http://\
+www.w3.org/2000/\
+svg\x22 stroke=\x22#54\
+5454\x22>\x0a\x0d<g id=\x22S\
+VGRepo_bgCarrier\
+\x22 stroke-width=\x22\
+0\x22/>\x0a\x0d<g id=\x22SVG\
+Repo_tracerCarri\
+er\x22 stroke-linec\
+ap=\x22round\x22 strok\
+e-linejoin=\x22roun\
+d\x22/>\x0a\x0d<g id=\x22SVG\
+Repo_iconCarrier\
+\x22>\x0a\x0d<path d=\x22M62\
+0.6 562.3l36.2 3\
+6.2L512 743.3 36\
+7.2 598.5l36.2-3\
+6.2L512 670.9l10\
+8.6-108.6zM512 3\
+53.1l108.6 108.6\
+ 36.2-36.2L512 2\
+80.7 367.2 425.5\
+l36.2 36.2L512 3\
+53.1z\x22/>\x0a\x0d</g>\x0a\x0d\
+</svg>\
 \x00\x00\x01\xea\
 <\
 ?xml version=\x221.\
@@ -200,6 +286,70 @@ th d=\x22M36,68a4.0\
 ,4,0,1,0,0,8H168\
 a4,4,0,0,0,0-8Z\x22\
 />\x0a</svg>\
+\x00\x00\x01\xd8\
+<\
+?xml version=\x221.\
+0\x22 encoding=\x22utf\
+-8\x22?><!-- Upload\
+ed to: SVG Repo,\
+ www.svgrepo.com\
+, Generator: SVG\
+ Repo Mixer Tool\
+s -->\x0a<svg fill=\
+\x22#000000\x22 width=\
+\x22800px\x22 height=\x22\
+800px\x22 viewBox=\x22\
+0 0 256 256\x22 id=\
+\x22Flat\x22 xmlns=\x22ht\
+tp://www.w3.org/\
+2000/svg\x22>\x0a  <pa\
+th d=\x22M36,68a4.0\
+002,4.0002,0,0,1\
+,4-4H216a4,4,0,0\
+,1,0,8H40A4.0002\
+,4.0002,0,0,1,36\
+,68Zm180,36H40a4\
+,4,0,0,0,0,8H216\
+a4,4,0,0,0,0-8Zm\
+0,40H40.00586a4,\
+4,0,1,0,0,8H216a\
+4,4,0,0,0,0-8Zm0\
+,40H40.00586a4,4\
+,0,1,0,0,8H216a4\
+,4,0,0,0,0-8Z\x22/>\
+\x0a</svg>\
+\x00\x00\x01\xd8\
+<\
+?xml version=\x221.\
+0\x22 encoding=\x22utf\
+-8\x22?><!-- Upload\
+ed to: SVG Repo,\
+ www.svgrepo.com\
+, Generator: SVG\
+ Repo Mixer Tool\
+s -->\x0a<svg fill=\
+\x22#000000\x22 width=\
+\x22800px\x22 height=\x22\
+800px\x22 viewBox=\x22\
+0 0 256 256\x22 id=\
+\x22Flat\x22 xmlns=\x22ht\
+tp://www.w3.org/\
+2000/svg\x22>\x0a  <pa\
+th d=\x22M36,68a4.0\
+002,4.0002,0,0,1\
+,4-4H216a4,4,0,0\
+,1,0,8H40A4.0002\
+,4.0002,0,0,1,36\
+,68Zm180,36H40a4\
+,4,0,0,0,0,8H216\
+a4,4,0,0,0,0-8Zm\
+0,40H40.00586a4,\
+4,0,1,0,0,8H216a\
+4,4,0,0,0,0-8Zm0\
+,40H40.00586a4,4\
+,0,1,0,0,8H216a4\
+,4,0,0,0,0-8Z\x22/>\
+\x0a</svg>\
 \x00\x00\x04A\
 <\
 ?xml version=\x221.\
@@ -342,70 +492,6 @@ H48a4,4,0,1,0,0,\
 183.999a4,4,0,0,\
 0,0-8Z\x22/>\x0a</svg>\
 \
-\x00\x00\x01\xd8\
-<\
-?xml version=\x221.\
-0\x22 encoding=\x22utf\
--8\x22?><!-- Upload\
-ed to: SVG Repo,\
- www.svgrepo.com\
-, Generator: SVG\
- Repo Mixer Tool\
-s -->\x0a<svg fill=\
-\x22#000000\x22 width=\
-\x22800px\x22 height=\x22\
-800px\x22 viewBox=\x22\
-0 0 256 256\x22 id=\
-\x22Flat\x22 xmlns=\x22ht\
-tp://www.w3.org/\
-2000/svg\x22>\x0a  <pa\
-th d=\x22M36,68a4.0\
-002,4.0002,0,0,1\
-,4-4H216a4,4,0,0\
-,1,0,8H40A4.0002\
-,4.0002,0,0,1,36\
-,68Zm180,36H40a4\
-,4,0,0,0,0,8H216\
-a4,4,0,0,0,0-8Zm\
-0,40H40.00586a4,\
-4,0,1,0,0,8H216a\
-4,4,0,0,0,0-8Zm0\
-,40H40.00586a4,4\
-,0,1,0,0,8H216a4\
-,4,0,0,0,0-8Z\x22/>\
-\x0a</svg>\
-\x00\x00\x01\xd8\
-<\
-?xml version=\x221.\
-0\x22 encoding=\x22utf\
--8\x22?><!-- Upload\
-ed to: SVG Repo,\
- www.svgrepo.com\
-, Generator: SVG\
- Repo Mixer Tool\
-s -->\x0a<svg fill=\
-\x22#000000\x22 width=\
-\x22800px\x22 height=\x22\
-800px\x22 viewBox=\x22\
-0 0 256 256\x22 id=\
-\x22Flat\x22 xmlns=\x22ht\
-tp://www.w3.org/\
-2000/svg\x22>\x0a  <pa\
-th d=\x22M36,68a4.0\
-002,4.0002,0,0,1\
-,4-4H216a4,4,0,0\
-,1,0,8H40A4.0002\
-,4.0002,0,0,1,36\
-,68Zm180,36H40a4\
-,4,0,0,0,0,8H216\
-a4,4,0,0,0,0-8Zm\
-0,40H40.00586a4,\
-4,0,1,0,0,8H216a\
-4,4,0,0,0,0-8Zm0\
-,40H40.00586a4,4\
-,0,1,0,0,8H216a4\
-,4,0,0,0,0-8Z\x22/>\
-\x0a</svg>\
 "
 
 qt_resource_name = b"\
@@ -418,6 +504,10 @@ qt_resource_name = b"\
 \x00r\
 \x00i\x00g\x00h\x00t\x00.\x00s\x00v\x00g\
 \x00\x0a\
+\x06\xebI\xe7\
+\x00a\
+\x00r\x00r\x00o\x00w\x00s\x00.\x00s\x00v\x00g\
+\x00\x0a\
 \x0a\xc8bg\
 \x00c\
 \x00e\x00n\x00t\x00e\x00r\x00.\x00s\x00v\x00g\
@@ -425,14 +515,14 @@ qt_resource_name = b"\
 \x0b\xd7T\x87\
 \x00l\
 \x00e\x00f\x00t\x00.\x00s\x00v\x00g\
-\x00\x0d\
-\x08\x83\xc8\x87\
-\x00i\
-\x00n\x00t\x00e\x00r\x00v\x00a\x00l\x00s\x00.\x00s\x00v\x00g\
 \x00\x0b\
 \x0f;\xcf\x87\
 \x00j\
 \x00u\x00s\x00t\x00i\x00f\x00y\x00.\x00s\x00v\x00g\
+\x00\x0b\
+\x00\xbe\x95\x87\
+\x00s\
+\x00p\x00a\x00c\x00i\x00n\x00g\x00.\x00s\x00v\x00g\
 "
 
 qt_resource_struct = b"\
@@ -440,27 +530,31 @@ qt_resource_struct = b"\
 \x00\x00\x00\x00\x00\x00\x00\x00\
 \x00\x00\x00\x00\x00\x02\x00\x00\x00\x01\x00\x00\x00\x02\
 \x00\x00\x00\x00\x00\x00\x00\x00\
-\x00\x00\x00\x00\x00\x02\x00\x00\x00\x0a\x00\x00\x00\x03\
+\x00\x00\x00\x00\x00\x02\x00\x00\x00\x0c\x00\x00\x00\x03\
 \x00\x00\x00\x00\x00\x00\x00\x00\
-\x00\x00\x00X\x00\x00\x00\x00\x00\x01\x00\x00\x0bP\
+\x00\x00\x00\x8e\x00\x00\x00\x00\x00\x01\x00\x00\x14\x1e\
 \x00\x00\x01\x90\xd9\xa5\x0a\xfe\
-\x00\x00\x00X\x00\x00\x00\x00\x00\x01\x00\x00\x0f\x95\
+\x00\x00\x00\x8e\x00\x00\x00\x00\x00\x01\x00\x00\x18c\
 \x00\x00\x01\x90\xd9\xa5\x0a\xfe\
 \x00\x00\x00(\x00\x00\x00\x00\x00\x01\x00\x00\x03\xb8\
+\x00\x00\x01\x90\xdfF\xce\xe9\
+\x00\x00\x00(\x00\x00\x00\x00\x00\x01\x00\x00\x06C\
+\x00\x00\x01\x90\xdfF\xce\xe9\
+\x00\x00\x00B\x00\x00\x00\x00\x00\x01\x00\x00\x08\xce\
 \x00\x00\x01\x90\xd9\xa3ok\
-\x00\x00\x00(\x00\x00\x00\x00\x00\x01\x00\x00\x05\xa6\
+\x00\x00\x00B\x00\x00\x00\x00\x00\x01\x00\x00\x0a\xbc\
 \x00\x00\x01\x90\xd9\xa3ok\
-\x00\x00\x00B\x00\x00\x00\x00\x00\x01\x00\x00\x07\x94\
+\x00\x00\x00\x5c\x00\x00\x00\x00\x00\x01\x00\x00\x0c\xaa\
 \x00\x00\x01\x90\xd9\xa3C\x9e\
-\x00\x00\x00B\x00\x00\x00\x00\x00\x01\x00\x00\x09r\
+\x00\x00\x00\x5c\x00\x00\x00\x00\x00\x01\x00\x00\x0e\x88\
 \x00\x00\x01\x90\xd9\xa3C\x9e\
 \x00\x00\x00\x10\x00\x00\x00\x00\x00\x01\x00\x00\x00\x00\
 \x00\x00\x01\x90\xd9\xa3V\xc7\
 \x00\x00\x00\x10\x00\x00\x00\x00\x00\x01\x00\x00\x01\xdc\
 \x00\x00\x01\x90\xd9\xa3V\xc7\
-\x00\x00\x00x\x00\x00\x00\x00\x00\x01\x00\x00\x13\xda\
+\x00\x00\x00r\x00\x00\x00\x00\x00\x01\x00\x00\x10f\
 \x00\x00\x01\x90\xd9\xa1U\x16\
-\x00\x00\x00x\x00\x00\x00\x00\x00\x01\x00\x00\x15\xb6\
+\x00\x00\x00r\x00\x00\x00\x00\x00\x01\x00\x00\x12B\
 \x00\x00\x01\x90\xd9\xa1U\x16\
 "
 

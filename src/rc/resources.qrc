@@ -4,6 +4,7 @@
     <file>icons/center.svg</file>
     <file>icons/right.svg</file>
     <file>icons/justify.svg</file>
-    <file>icons/intervals.svg</file>
+    <file>icons/spacing.svg</file>
+    <file>icons/arrows.svg</file>
   </qresource>
 </RCC>

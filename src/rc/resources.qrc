@@ -1,9 +1,8 @@
 <RCC>
   <qresource prefix="icons">
+    <file>icons/arrows.png</file>
     <file>icons/arrow_down.png</file>
     <file>icons/arrow_up.png</file>
-    <file>icons/arrows.svg</file>
-    <file>icons/arrows.png</file>
     <file>icons/center.svg</file>
     <file>icons/justify.svg</file>
     <file>icons/left.svg</file>

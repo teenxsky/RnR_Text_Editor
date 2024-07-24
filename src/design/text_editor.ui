@@ -127,6 +127,7 @@ QWidget#widget_color {
 	color: rgb(84, 84, 84);
 	background-color: rgb(244, 244, 244);
 	border-radius: 5px;	
+	padding-left: 2px;
 	border: 1px solid rgb(234, 234, 234);
 }
 
@@ -135,11 +136,25 @@ QFontComboBox::hover {
 }
 
 QFontComboBox::drop-down {
-    subcontrol-origin: padding;
     subcontrol-position: top right;
     width: 20px;
     border-top-right-radius: 5px;
     border-bottom-right-radius: 5px;
+}
+
+QFontComboBox::down-arrow {
+    subcontrol-position: margin;
+	subcontrol-origin: border;
+	border-image: url(:/icons/icons/arrows.png);
+	height: 12px;
+	width: 12px;
+	border-radius: 4px;
+	margin-top: 2px;
+	background-color: rgb(234, 234, 234);
+}
+
+QFontComboBox::down-arrow:hover: {
+	background-color: rgb(204, 204, 204);
 }</string>
          </property>
          <property name="editable">
@@ -163,31 +178,52 @@ QFontComboBox::drop-down {
          <property name="styleSheet">
           <string notr="true">QSpinBox {
 	color: rgb(84, 84, 84);
-	padding-right: 5px;
 	border: 1px solid rgb(234, 234, 234);
 	border-radius: 5px;
 	background-color: rgb(244, 244, 244);
+	padding-left: 2px;
 }
 
 QSpinBox::hover {
 	background-color: rgb(234, 234, 234);
 }
 
-QSpinBox::up-button {
+QSpinBox::up-button, QSpinBox::down-button {
 	subcontrol-origin: border;
-	border: 0;
-	width: 20px;
+	margin-right: 3px;
+	width: 10px;
+	height: 8px;
+	border-radius: 4px;
+}
+
+QSpinBox::up-button {
+	subcontrol-position: top right;
+	margin-top: 2px;
+	border-image: url(:/icons/icons/arrow_up.png) 1;
 }
 
 QSpinBox::down-button {
-	subcontrol-origin: border;
-	border: 0;
-	width: 20px;
+	subcontrol-position: bottom right;
+	margin-bottom: 3px;
+	border-image: url(:/icons/icons/arrow_down.png) 1;
 }
+
+QSpinBox::up-button::hover,  QSpinBox::down-button::hover {
+	background-color: rgb(224, 224, 224);
+}
+
+QSpinBox::up-button::pressed, QSpinBox::down-button::pressed  {
+	background-color: rgb(214, 214, 214);
+}
+
+
 </string>
          </property>
          <property name="alignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+         <property name="maximum">
+          <number>288</number>
          </property>
         </widget>
        </item>
@@ -595,7 +631,7 @@ QSpinBox::down-button {
      </widget>
     </item>
     <item>
-     <widget class="QTextEdit" name="textEdit"/>
+     <widget class="QTextEdit" name="text_edit"/>
     </item>
    </layout>
   </widget>
@@ -608,125 +644,127 @@ QSpinBox::down-button {
      <height>24</height>
     </rect>
    </property>
-   <widget class="QMenu" name="menuFile">
+   <widget class="QMenu" name="menu_file">
     <property name="title">
      <string>File</string>
     </property>
-    <addaction name="actionNew"/>
-    <addaction name="actionOpen"/>
-    <addaction name="actionRecent"/>
+    <addaction name="action_new"/>
+    <addaction name="action_open"/>
+    <addaction name="action_recent"/>
     <addaction name="separator"/>
-    <addaction name="actionClose"/>
-    <addaction name="actionSave"/>
-    <addaction name="actionRename"/>
+    <addaction name="action_close"/>
+    <addaction name="action_save"/>
+    <addaction name="action_rename"/>
    </widget>
-   <widget class="QMenu" name="menuEdit">
+   <widget class="QMenu" name="menu_edit">
     <property name="title">
      <string>Edit</string>
     </property>
-    <widget class="QMenu" name="menuFind">
+    <widget class="QMenu" name="menu_find">
      <property name="title">
       <string>Find</string>
      </property>
-     <addaction name="actionFind_2"/>
-     <addaction name="actionFind_and_Replace"/>
+     <addaction name="action_find"/>
+     <addaction name="action_find_and_replace"/>
     </widget>
-    <addaction name="actionCut"/>
-    <addaction name="actionCopy"/>
-    <addaction name="actionPaste"/>
-    <addaction name="actionDelete"/>
+    <addaction name="action_cut"/>
+    <addaction name="action_copy"/>
+    <addaction name="action_paste"/>
+    <addaction name="action_delete"/>
     <addaction name="separator"/>
-    <addaction name="menuFind"/>
+    <addaction name="menu_find"/>
    </widget>
-   <widget class="QMenu" name="menuView">
+   <widget class="QMenu" name="menu_veiw">
     <property name="title">
      <string>View</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menuSettings">
+   <widget class="QMenu" name="menu_settings">
     <property name="title">
      <string>Settings</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menuWindow">
+   <widget class="QMenu" name="menu_window">
     <property name="title">
      <string>Window</string>
     </property>
    </widget>
-   <widget class="QMenu" name="menuHelp">
+   <widget class="QMenu" name="menu_help">
     <property name="title">
      <string>Help</string>
     </property>
    </widget>
-   <addaction name="menuFile"/>
-   <addaction name="menuEdit"/>
-   <addaction name="menuView"/>
-   <addaction name="menuSettings"/>
-   <addaction name="menuWindow"/>
-   <addaction name="menuHelp"/>
+   <addaction name="menu_file"/>
+   <addaction name="menu_edit"/>
+   <addaction name="menu_veiw"/>
+   <addaction name="menu_settings"/>
+   <addaction name="menu_window"/>
+   <addaction name="menu_help"/>
   </widget>
-  <action name="actionNew">
+  <action name="action_new">
    <property name="text">
     <string>New</string>
    </property>
   </action>
-  <action name="actionOpen">
+  <action name="action_open">
    <property name="text">
     <string>Open</string>
    </property>
   </action>
-  <action name="actionRecent">
+  <action name="action_recent">
    <property name="text">
     <string>Recent</string>
    </property>
   </action>
-  <action name="actionClose">
+  <action name="action_close">
    <property name="text">
     <string>Close</string>
    </property>
   </action>
-  <action name="actionSave">
+  <action name="action_save">
    <property name="text">
     <string>Save</string>
    </property>
   </action>
-  <action name="actionRename">
+  <action name="action_rename">
    <property name="text">
     <string>Rename</string>
    </property>
   </action>
-  <action name="actionCut">
+  <action name="action_cut">
    <property name="text">
     <string>Cut</string>
    </property>
   </action>
-  <action name="actionCopy">
+  <action name="action_copy">
    <property name="text">
     <string>Copy</string>
    </property>
   </action>
-  <action name="actionPaste">
+  <action name="action_paste">
    <property name="text">
     <string>Paste</string>
    </property>
   </action>
-  <action name="actionDelete">
+  <action name="action_delete">
    <property name="text">
     <string>Delete</string>
    </property>
   </action>
-  <action name="actionFind_2">
+  <action name="action_find">
    <property name="text">
     <string>Find</string>
    </property>
   </action>
-  <action name="actionFind_and_Replace">
+  <action name="action_find_and_replace">
    <property name="text">
     <string>Find and Replace</string>
    </property>
   </action>
  </widget>
- <resources/>
+ <resources>
+  <include location="../rc/resources.qrc"/>
+ </resources>
  <connections/>
  <buttongroups>
   <buttongroup name="button_group_align"/>

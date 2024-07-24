@@ -187,6 +187,10 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self.ui.widget_color.setStyleSheet(f"background-color: {color.name(QColor.NameFormat.HexRgb)};")
 
     def closeEvent(self, event):
+
+        if not self.ui.text_edit.toPlainText():
+            return
+
         reply = QMessageBox.question(self,
                                      'Application Close',
                                      'Do you want to save the current document?',

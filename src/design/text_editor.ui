@@ -185,7 +185,7 @@ QSpinBox::hover {
 
 QSpinBox::up-button, QSpinBox::down-button {
 	subcontrol-origin: border;
-	margin-right: 3px;
+	margin-right: 5px;
 	width: 9px;
 	height: 8px;
 	border-radius: 4px;

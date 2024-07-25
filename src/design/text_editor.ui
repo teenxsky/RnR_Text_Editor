@@ -650,6 +650,8 @@ QSpinBox::up-button::pressed, QSpinBox::down-button::pressed  {
     <addaction name="action_close"/>
     <addaction name="action_save"/>
     <addaction name="action_rename"/>
+    <addaction name="separator"/>
+    <addaction name="action_print"/>
    </widget>
    <widget class="QMenu" name="menu_edit">
     <property name="title">
@@ -754,6 +756,11 @@ QSpinBox::up-button::pressed, QSpinBox::down-button::pressed  {
   <action name="action_find_and_replace">
    <property name="text">
     <string>Find and Replace</string>
+   </property>
+  </action>
+  <action name="action_print">
+   <property name="text">
+    <string>Print</string>
    </property>
   </action>
  </widget>

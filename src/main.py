@@ -1,19 +1,22 @@
 import os
 import sys
+import json
 
-from PySide6.QtCore import QSize, QEvent
-from PySide6.QtGui import QIcon, Qt, QColor, QFont
-from PySide6.QtWidgets import QMainWindow, QApplication, QColorDialog, QTextEdit, QMessageBox
+from PySide6.QtCore import QSize, QEvent, QFile
+from PySide6.QtGui import QIcon, Qt, QColor, QFont, QKeySequence
+from PySide6.QtWidgets import QMainWindow, QApplication, QColorDialog, QTextEdit, QMessageBox, QMenu
 
 from design import Ui_MainWindow
 from service_files import FileManager
 
 import rc.resources
 
-# RECENT_FILES = []
+INFO_PATH = "info.json"
 
 
 class TextEditor(Ui_MainWindow, QMainWindow):
+    recent_files_max_amount = 6
+
     def __init__(self):
         super(Ui_MainWindow, self).__init__()
 
@@ -77,13 +80,33 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self.ui.button_underline.toggled.connect(lambda x: self.ui.text_edit.setFontUnderline(True if x else False))
 
         self.ui.action_close.triggered.connect(self.close)
+        self.ui.action_close.setShortcutContext(Qt.ShortcutContext.WindowShortcut)
+        self.ui.action_close.setShortcut(QKeySequence("Ctrl+W"))
+
         self.ui.action_new.triggered.connect(self.new_file_event)
+        self.ui.action_new.setShortcutContext(Qt.ShortcutContext.WindowShortcut)
+        self.ui.action_new.setShortcut(QKeySequence("Ctrl+N"))
+
         self.ui.action_open.triggered.connect(self.open_file_event)
+        self.ui.action_open.setShortcutContext(Qt.ShortcutContext.WindowShortcut)
+        self.ui.action_open.setShortcut(QKeySequence("Ctrl+O"))
+
         self.ui.action_save.triggered.connect(self.save_file_event)
+        self.ui.action_save.setShortcutContext(Qt.ShortcutContext.WindowShortcut)
+        self.ui.action_save.setShortcut(QKeySequence("Ctrl+S"))
 
         self.ui.action_cut.triggered.connect(self.ui.text_edit.cut)
+        self.ui.action_cut.setShortcutContext(Qt.ShortcutContext.WindowShortcut)
+        self.ui.action_cut.setShortcut(QKeySequence("Ctrl+X"))
+
         self.ui.action_copy.triggered.connect(self.ui.text_edit.copy)
+        self.ui.action_copy.setShortcutContext(Qt.ShortcutContext.WindowShortcut)
+        self.ui.action_copy.setShortcut(QKeySequence("Ctrl+C"))
+
         self.ui.action_paste.triggered.connect(self.ui.text_edit.paste)
+        self.ui.action_paste.setShortcutContext(Qt.ShortcutContext.WindowShortcut)
+        self.ui.action_paste.setShortcut(QKeySequence("Ctrl+V"))
+
         self.ui.action_delete.triggered.connect(self.delete_event)
 
         self.ui.spin_box_size.setValue(12)
@@ -121,7 +144,48 @@ class TextEditor(Ui_MainWindow, QMainWindow):
                 self.color_picker()
 
             return True
-    
+
+    @staticmethod
+    def get_info():
+        with open(INFO_PATH, "r+") as f:
+            info = f.read()
+            if not info:
+                info = json.dumps({"recent_files": []})
+                f.write(info)
+        return json.loads(info)
+
+    def get_recent_files(self):
+        info = self.get_info()
+        return info["recent_files"]
+
+    def update_recent_files(self):
+        recent_files = self.get_recent_files()
+
+        if not recent_files:
+            return
+
+        menu = QMenu()
+        for path in recent_files:
+            menu.addAction(QFile(path).fileName())
+        self.ui.action_recent.setMenu(menu)
+
+    def add_to_recent_files(self, path: str):
+        info = self.get_info()
+        recent_files = info["recent_files"]
+
+        recent_files = [path] + recent_files
+
+        if len(recent_files) > self.recent_files_max_amount:
+            recent_files = recent_files[:-1]
+
+        info["recent_files"] = recent_files
+        info_json = json.dumps(info)
+
+        with open(INFO_PATH, "w") as f:
+            f.write(info_json)
+
+        self.update_recent_files()
+
     def delete_event(self):
         cursor = self.ui.text_edit.textCursor()
         cursor.removeSelectedText()
@@ -129,15 +193,16 @@ class TextEditor(Ui_MainWindow, QMainWindow):
     def new_file_event(self):
         self._default_settings()
         self._update_title()
-    
+
     def open_file_event(self):
-        self.file_manager.open_file()
+        path = self.file_manager.open_file()
+        self.add_to_recent_files(path)
         self._update_title()
-    
+
     def save_file_event(self):
         self.file_manager.save_file()
         self._update_title()
-    
+
     def _update_title(self):
         self.setWindowTitle("%s - R&R Text Editor" % (os.path.basename(self.file_manager.file_path)
                                                       if self.file_manager.file_path else "Untitled"))
@@ -196,7 +261,7 @@ class TextEditor(Ui_MainWindow, QMainWindow):
                                      'Do you want to save the current document?',
                                      QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
                                      QMessageBox.StandardButton.Yes)
-        
+
         if reply == QMessageBox.StandardButton.No:
             event.accept()
         else:

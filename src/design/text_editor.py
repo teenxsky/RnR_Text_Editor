@@ -53,6 +53,8 @@ class Ui_MainWindow(object):
         self.action_find.setObjectName(u"action_find")
         self.action_find_and_replace = QAction(MainWindow)
         self.action_find_and_replace.setObjectName(u"action_find_and_replace")
+        self.action_print = QAction(MainWindow)
+        self.action_print.setObjectName(u"action_print")
         self.central_widget = QWidget(MainWindow)
         self.central_widget.setObjectName(u"central_widget")
         self.central_widget.setStyleSheet(u"QFrame {\n"
@@ -160,7 +162,7 @@ class Ui_MainWindow(object):
 "\n"
 "QSpinBox::up-button, QSpinBox::down-button {\n"
 "	subcontrol-origin: border;\n"
-"	margin-right: 3px;\n"
+"	margin-right: 5px;\n"
 "	width: 9px;\n"
 "	height: 8px;\n"
 "	border-radius: 4px;\n"
@@ -377,6 +379,8 @@ class Ui_MainWindow(object):
         self.menu_file.addAction(self.action_close)
         self.menu_file.addAction(self.action_save)
         self.menu_file.addAction(self.action_rename)
+        self.menu_file.addSeparator()
+        self.menu_file.addAction(self.action_print)
         self.menu_edit.addAction(self.action_cut)
         self.menu_edit.addAction(self.action_copy)
         self.menu_edit.addAction(self.action_paste)
@@ -405,6 +409,7 @@ class Ui_MainWindow(object):
         self.action_delete.setText(QCoreApplication.translate("MainWindow", u"Delete", None))
         self.action_find.setText(QCoreApplication.translate("MainWindow", u"Find", None))
         self.action_find_and_replace.setText(QCoreApplication.translate("MainWindow", u"Find and Replace", None))
+        self.action_print.setText(QCoreApplication.translate("MainWindow", u"Print", None))
 #if QT_CONFIG(tooltip)
         self.combo_box_fonts.setToolTip(QCoreApplication.translate("MainWindow", u"Font", None))
 #endif // QT_CONFIG(tooltip)

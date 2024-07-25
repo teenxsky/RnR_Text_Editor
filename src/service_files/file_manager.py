@@ -78,6 +78,8 @@ class FileManager(QMainWindow):
             text = open(self.file_path, 'r', encoding='utf-8').read()
             self.text_widget.setPlainText(text)
 
+        return self.file_path
+
     def save_file(self):
         file_dialog = QFileDialog(self, "Save File")
 

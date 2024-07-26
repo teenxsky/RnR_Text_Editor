@@ -34,9 +34,12 @@ class FileManager(QMainWindow):
             file_dialog.setFileMode(QFileDialog.FileMode.ExistingFile)
 
             if file_dialog.exec() != QDialog.DialogCode.Accepted:
-                return
+                return False
             else:
                 self.file_path = QDir.toNativeSeparators(file_dialog.selectedFiles()[0])
+        
+        if not os.path.exists(self.file_path):
+            return False
 
         file = QFile(self.file_path)
         file.open(QFile.OpenModeFlag.ReadOnly)
@@ -78,6 +81,8 @@ class FileManager(QMainWindow):
         else:
             text = open(self.file_path, 'r', encoding='utf-8').read()
             self.text_widget.setPlainText(text)
+        
+        return True
 
     def save_file(self):
         file_dialog = QFileDialog(self, "Save File")

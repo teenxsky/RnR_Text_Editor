@@ -34,3 +34,14 @@ def add_recent_file(path: str) -> None:
 
     with open(config_path, "w") as file:
         file.write(config_info)
+
+def remove_recent_file(path: str) -> None:
+    info = get_info()
+    recent_files = info["recent_files"]
+
+    recent_files.remove(path)
+    info["recent_files"] = recent_files
+
+    config_info = json.dumps(info)
+    with open(config_path, "w") as file:
+        file.write(config_info)

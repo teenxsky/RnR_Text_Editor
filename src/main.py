@@ -6,7 +6,7 @@ from PySide6.QtGui import QIcon, Qt, QColor, QFont, QKeySequence, QAction
 from PySide6.QtWidgets import QMainWindow, QApplication, QColorDialog, QTextEdit, QMessageBox
 
 from design import Ui_MainWindow
-from service_files import FileManager, get_info, add_recent_file
+from service_files import FileManager, get_info, add_recent_file, remove_recent_file
 
 import rc.resources
 
@@ -146,6 +146,21 @@ class TextEditor(Ui_MainWindow, QMainWindow):
     def add_to_recent_files(self, path: str):
         add_recent_file(path)
         self.update_recent_files()
+    
+    def remove_recent_files(self, remove_file_path=""):
+        if not remove_file_path:
+            if RECENT_FILE_ACTIONS != []:
+                for action in RECENT_FILE_ACTIONS:
+                    action.deleteLater()
+                RECENT_FILE_ACTIONS.clear()
+        else:
+            for action in RECENT_FILE_ACTIONS:
+                filename = action.text()
+                if remove_file_path.endswith(filename):
+                    action.deleteLater()
+                    RECENT_FILE_ACTIONS.remove(action)
+                    remove_recent_file(remove_file_path)
+                    return
 
     def update_recent_files(self):
         recent_files = get_info()["recent_files"]
@@ -153,10 +168,7 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         if not recent_files:
             return
         
-        if RECENT_FILE_ACTIONS != []:
-            for action in RECENT_FILE_ACTIONS:
-                action.deleteLater()
-            RECENT_FILE_ACTIONS.clear()
+        self.remove_recent_files()
 
         for path in recent_files:
             filename = path.split("/")[-1]
@@ -188,12 +200,21 @@ class TextEditor(Ui_MainWindow, QMainWindow):
                 return
         
         if not recent_file_path:
-            self.file_manager.open_file()
+            if not self.file_manager.open_file():
+                self._file_not_found_message()
+            else:
+                self.add_to_recent_files(self.file_manager.file_path)
         else:
             self.file_manager.file_path = recent_file_path
-            self.file_manager.open_file(is_recent_file=True)
-        self.add_to_recent_files(self.file_manager.file_path)
+            if not self.file_manager.open_file(is_recent_file=True):
+                self._file_not_found_message()
+                self.file_manager.file_path = None
 
+                self.remove_recent_files(remove_file_path=recent_file_path)
+                self.update_recent_files()
+            else:
+                self.add_to_recent_files(self.file_manager.file_path)
+        
         self._update_title()
     
     def open_recent_file_event(self):
@@ -265,18 +286,27 @@ class TextEditor(Ui_MainWindow, QMainWindow):
             event.accept()
     
     def _save_file_message(self):
-        reply = QMessageBox(self)
-        reply.setText('Save Document')
-        reply.setInformativeText('Do you want to save the current document?')
-        reply.setStandardButtons(QMessageBox.StandardButton.Yes | 
+        msg_box = QMessageBox(self)
+        msg_box.setText('Save Document')
+        msg_box.setInformativeText('Do you want to save the current document?')
+        msg_box.setStandardButtons(QMessageBox.StandardButton.Yes | 
                                  QMessageBox.StandardButton.No | 
                                  QMessageBox.StandardButton.Cancel)
 
-        result = reply.exec()
+        result = msg_box.exec()
         if result == QMessageBox.StandardButton.Yes:
             self.save_file_event()
 
         return result
+
+    def _file_not_found_message(self):
+        msg_box = QMessageBox(self)
+        msg_box.setText('File Not Found')
+        msg_box.setInformativeText('This file was not found or does not exist. Try again.')
+        msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
+
+        msg_box.exec()
+        return
 
 
 if __name__ == '__main__':

@@ -1,22 +1,19 @@
 import os
 import sys
-import json
 
-from PySide6.QtCore import QSize, QEvent, QFile
-from PySide6.QtGui import QIcon, Qt, QColor, QFont, QKeySequence
-from PySide6.QtWidgets import QMainWindow, QApplication, QColorDialog, QTextEdit, QMessageBox, QMenu
+from PySide6.QtCore import QSize, QEvent, QCoreApplication
+from PySide6.QtGui import QIcon, Qt, QColor, QFont, QKeySequence, QAction
+from PySide6.QtWidgets import QMainWindow, QApplication, QColorDialog, QTextEdit, QMessageBox
 
 from design import Ui_MainWindow
-from service_files import FileManager
+from service_files import FileManager, get_info, add_recent_file
 
 import rc.resources
 
-INFO_PATH = "info.json"
+RECENT_FILE_ACTIONS = []
 
 
 class TextEditor(Ui_MainWindow, QMainWindow):
-    recent_files_max_amount = 6
-
     def __init__(self):
         super(Ui_MainWindow, self).__init__()
 
@@ -127,6 +124,7 @@ class TextEditor(Ui_MainWindow, QMainWindow):
 
         self.update_format()
         self._update_title()
+        self.update_recent_files()
 
     def eventFilter(self, watched, event):
         if watched == self.ui.widget_color_picker:
@@ -145,59 +143,65 @@ class TextEditor(Ui_MainWindow, QMainWindow):
 
             return True
 
-    @staticmethod
-    def get_info():
-        with open(INFO_PATH, "r+") as f:
-            info = f.read()
-            if not info:
-                info = json.dumps({"recent_files": []})
-                f.write(info)
-        return json.loads(info)
-
-    def get_recent_files(self):
-        info = self.get_info()
-        return info["recent_files"]
+    def add_to_recent_files(self, path: str):
+        add_recent_file(path)
+        self.update_recent_files()
 
     def update_recent_files(self):
-        recent_files = self.get_recent_files()
+        recent_files = get_info()["recent_files"]
 
         if not recent_files:
             return
+        
+        if RECENT_FILE_ACTIONS != []:
+            for action in RECENT_FILE_ACTIONS:
+                action.deleteLater()
+            RECENT_FILE_ACTIONS.clear()
 
-        menu = QMenu()
         for path in recent_files:
-            menu.addAction(QFile(path).fileName())
-        self.ui.action_recent.setMenu(menu)
+            filename = path.split("/")[-1]
 
-    def add_to_recent_files(self, path: str):
-        info = self.get_info()
-        recent_files = info["recent_files"]
+            new_action = QAction(self)
+            new_action.setObjectName(filename)
+            new_action.setText(QCoreApplication.translate("MainWindow", filename, None))
+            
+            new_action.triggered.connect(self.open_recent_file_event)
 
-        recent_files = [path] + recent_files
-
-        if len(recent_files) > self.recent_files_max_amount:
-            recent_files = recent_files[:-1]
-
-        info["recent_files"] = recent_files
-        info_json = json.dumps(info)
-
-        with open(INFO_PATH, "w") as f:
-            f.write(info_json)
-
-        self.update_recent_files()
+            RECENT_FILE_ACTIONS.append(new_action)
+            self.ui.menuRecent.addAction(new_action)
 
     def delete_event(self):
         cursor = self.ui.text_edit.textCursor()
         cursor.removeSelectedText()
 
     def new_file_event(self):
+        if self.ui.text_edit.toPlainText():
+            if self._save_file_message() == QMessageBox.StandardButton.Cancel:
+                return
+            
         self._default_settings()
         self._update_title()
 
-    def open_file_event(self):
-        path = self.file_manager.open_file()
-        self.add_to_recent_files(path)
+    def open_file_event(self, recent_file_path=""):
+        if self.ui.text_edit.toPlainText():
+            if self._save_file_message() == QMessageBox.StandardButton.Cancel:
+                return
+        
+        if not recent_file_path:
+            self.file_manager.open_file()
+        else:
+            self.file_manager.file_path = recent_file_path
+            self.file_manager.open_file(is_recent_file=True)
+        self.add_to_recent_files(self.file_manager.file_path)
+
         self._update_title()
+    
+    def open_recent_file_event(self):
+        recent_files = get_info()["recent_files"]
+        for file in recent_files:
+            if file.endswith(self.sender().text()):
+                self.open_file_event(recent_file_path=file)
+                return
 
     def save_file_event(self):
         self.file_manager.save_file()
@@ -252,21 +256,27 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self.ui.widget_color.setStyleSheet(f"background-color: {color.name(QColor.NameFormat.HexRgb)};")
 
     def closeEvent(self, event):
-
         if not self.ui.text_edit.toPlainText():
-            return
-
-        reply = QMessageBox.question(self,
-                                     'Application Close',
-                                     'Do you want to save the current document?',
-                                     QMessageBox.StandardButton.Yes | QMessageBox.StandardButton.No,
-                                     QMessageBox.StandardButton.Yes)
-
-        if reply == QMessageBox.StandardButton.No:
             event.accept()
+        
+        if self._save_file_message() == QMessageBox.StandardButton.Cancel:
+            event.ignore()
         else:
-            # self.save_file()
             event.accept()
+    
+    def _save_file_message(self):
+        reply = QMessageBox(self)
+        reply.setText('Save Document')
+        reply.setInformativeText('Do you want to save the current document?')
+        reply.setStandardButtons(QMessageBox.StandardButton.Yes | 
+                                 QMessageBox.StandardButton.No | 
+                                 QMessageBox.StandardButton.Cancel)
+
+        result = reply.exec()
+        if result == QMessageBox.StandardButton.Yes:
+            self.save_file_event()
+
+        return result
 
 
 if __name__ == '__main__':

@@ -20,7 +20,7 @@ from PySide6.QtWidgets import (QApplication, QButtonGroup, QFontComboBox, QFrame
     QGridLayout, QHBoxLayout, QMainWindow, QMenu,
     QMenuBar, QPushButton, QSizePolicy, QSpacerItem,
     QSpinBox, QTextEdit, QVBoxLayout, QWidget)
-from src.rc import resources
+import rc.resources
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -33,8 +33,6 @@ class Ui_MainWindow(object):
         self.action_new.setObjectName(u"action_new")
         self.action_open = QAction(MainWindow)
         self.action_open.setObjectName(u"action_open")
-        self.action_recent = QAction(MainWindow)
-        self.action_recent.setObjectName(u"action_recent")
         self.action_close = QAction(MainWindow)
         self.action_close.setObjectName(u"action_close")
         self.action_save = QAction(MainWindow)
@@ -352,6 +350,8 @@ class Ui_MainWindow(object):
         self.menubar.setGeometry(QRect(0, 0, 770, 24))
         self.menu_file = QMenu(self.menubar)
         self.menu_file.setObjectName(u"menu_file")
+        self.menuRecent = QMenu(self.menu_file)
+        self.menuRecent.setObjectName(u"menuRecent")
         self.menu_edit = QMenu(self.menubar)
         self.menu_edit.setObjectName(u"menu_edit")
         self.menu_find = QMenu(self.menu_edit)
@@ -374,7 +374,7 @@ class Ui_MainWindow(object):
         self.menubar.addAction(self.menu_help.menuAction())
         self.menu_file.addAction(self.action_new)
         self.menu_file.addAction(self.action_open)
-        self.menu_file.addAction(self.action_recent)
+        self.menu_file.addAction(self.menuRecent.menuAction())
         self.menu_file.addSeparator()
         self.menu_file.addAction(self.action_close)
         self.menu_file.addAction(self.action_save)
@@ -399,7 +399,6 @@ class Ui_MainWindow(object):
         MainWindow.setWindowTitle(QCoreApplication.translate("MainWindow", u"R&R Text Editor", None))
         self.action_new.setText(QCoreApplication.translate("MainWindow", u"New", None))
         self.action_open.setText(QCoreApplication.translate("MainWindow", u"Open", None))
-        self.action_recent.setText(QCoreApplication.translate("MainWindow", u"Recent", None))
         self.action_close.setText(QCoreApplication.translate("MainWindow", u"Close", None))
         self.action_save.setText(QCoreApplication.translate("MainWindow", u"Save", None))
         self.action_rename.setText(QCoreApplication.translate("MainWindow", u"Rename", None))
@@ -449,6 +448,7 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.button_spacing.setText("")
         self.menu_file.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
+        self.menuRecent.setTitle(QCoreApplication.translate("MainWindow", u"Recent", None))
         self.menu_edit.setTitle(QCoreApplication.translate("MainWindow", u"Edit", None))
         self.menu_find.setTitle(QCoreApplication.translate("MainWindow", u"Find", None))
         self.menu_veiw.setTitle(QCoreApplication.translate("MainWindow", u"View", None))

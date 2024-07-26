@@ -25,17 +25,18 @@ class FileManager(QMainWindow):
         self.file_path = None
         self.mime_type_name = None
 
-    def open_file(self):
-        file_dialog = QFileDialog(self, "Open File")
+    def open_file(self, is_recent_file=False):
+        if not is_recent_file:
+            file_dialog = QFileDialog(self, "Open File")
 
-        file_dialog.setMimeTypeFilters(MIME_TYPES)
-        file_dialog.setAcceptMode(QFileDialog.AcceptMode.AcceptOpen)
-        file_dialog.setFileMode(QFileDialog.FileMode.ExistingFile)
+            file_dialog.setMimeTypeFilters(MIME_TYPES)
+            file_dialog.setAcceptMode(QFileDialog.AcceptMode.AcceptOpen)
+            file_dialog.setFileMode(QFileDialog.FileMode.ExistingFile)
 
-        if file_dialog.exec() != QDialog.DialogCode.Accepted:
-            return
-        else:
-            self.file_path = QDir.toNativeSeparators(file_dialog.selectedFiles()[0])
+            if file_dialog.exec() != QDialog.DialogCode.Accepted:
+                return
+            else:
+                self.file_path = QDir.toNativeSeparators(file_dialog.selectedFiles()[0])
 
         file = QFile(self.file_path)
         file.open(QFile.OpenModeFlag.ReadOnly)
@@ -77,8 +78,6 @@ class FileManager(QMainWindow):
         else:
             text = open(self.file_path, 'r', encoding='utf-8').read()
             self.text_widget.setPlainText(text)
-
-        return self.file_path
 
     def save_file(self):
         file_dialog = QFileDialog(self, "Save File")

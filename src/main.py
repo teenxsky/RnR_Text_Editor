@@ -1,17 +1,31 @@
-import os
 import sys
 
-from PySide6.QtCore import QSize, QEvent, QCoreApplication
+from PySide6.QtCore import QSize, QEvent, QCoreApplication, QDir
 from PySide6.QtGui import QIcon, Qt, QColor, QFont, QKeySequence, QAction
-from PySide6.QtWidgets import QMainWindow, QApplication, QColorDialog, QTextEdit, QMessageBox
+from PySide6.QtWidgets import QMainWindow, QApplication, QColorDialog, QTextEdit, QMessageBox, QDialog
 
-from design import Ui_MainWindow
+from design import Ui_MainWindow, Ui_Dialog
 from service_files import FileManager, get_info, add_recent_file, remove_recent_file
 
 import rc.resources
 
 RECENT_FILE_ACTIONS = []
 
+
+class RenameWidget(Ui_Dialog, QDialog):
+    def __init__(self): 
+        super(Ui_Dialog, self).__init__() 
+
+        self.ui = Ui_Dialog()
+        self.ui.setupUi(self)
+        self.setWindowTitle("Rename File")
+
+    def get_filename(self):
+        return self.ui.lineEdit.text()
+    
+    def set_filename(self, filename: str):
+        self.ui.lineEdit.setText(filename)
+    
 
 class TextEditor(Ui_MainWindow, QMainWindow):
     def __init__(self):
@@ -20,6 +34,7 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        self.rename_widget = RenameWidget()
         self.file_manager = FileManager(self.ui.text_edit)
 
         self._set_icons_svg()
@@ -104,6 +119,8 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self.ui.action_paste.setShortcutContext(Qt.ShortcutContext.WindowShortcut)
         self.ui.action_paste.setShortcut(QKeySequence("Ctrl+V"))
 
+        self.ui.action_rename.triggered.connect(self.rename_event)
+
         self.ui.action_delete.triggered.connect(self.delete_event)
 
         self.ui.spin_box_size.setValue(12)
@@ -171,7 +188,7 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self.remove_recent_files()
 
         for path in recent_files:
-            filename = path.split("/")[-1]
+            filename = QDir(path).dirName()
 
             new_action = QAction(self)
             new_action.setObjectName(filename)
@@ -227,9 +244,38 @@ class TextEditor(Ui_MainWindow, QMainWindow):
     def save_file_event(self):
         self.file_manager.save_file()
         self._update_title()
+    
+    def rename_event(self):
+        file_extension = f".{self.file_manager.file_path.split('.')[-1]}" \
+                         if self.file_manager.file_path \
+                         else None
 
+        self.rename_widget.set_filename(QDir(self.file_manager.file_path).dirName()[:-len(file_extension)]
+                                        if self.file_manager.file_path 
+                                        else "Untitled")
+
+        if self.rename_widget.exec() == 1:
+            new_filename = self.rename_widget.get_filename()
+
+            if self.file_manager.file_path is None:
+                self.file_manager.file_path = new_filename.split('.')[0]
+            else:
+                new_filename = self.rename_widget.get_filename().split('.')[0] + file_extension
+                old_filename = QDir(self.file_manager.file_path).dirName()
+
+                directory = self.file_manager.file_path[:-len(old_filename)]
+                QDir(directory).rename(old_filename, new_filename)
+
+                self.file_manager.file_path = directory + new_filename
+
+                self.remove_recent_files(remove_file_path=directory + old_filename)
+                self.add_to_recent_files(path=self.file_manager.file_path)
+                self.update_recent_files
+            
+            self._update_title()
+            
     def _update_title(self):
-        self.setWindowTitle("%s - R&R Text Editor" % (os.path.basename(self.file_manager.file_path)
+        self.setWindowTitle("%s - R&R Text Editor" % (QDir(self.file_manager.file_path).dirName()
                                                       if self.file_manager.file_path else "Untitled"))
 
     def _default_settings(self):

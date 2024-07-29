@@ -16,10 +16,11 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtWidgets import (QApplication, QButtonGroup, QFontComboBox, QFrame,
-    QGridLayout, QHBoxLayout, QMainWindow, QMenu,
-    QMenuBar, QPushButton, QSizePolicy, QSpacerItem,
-    QSpinBox, QTextEdit, QVBoxLayout, QWidget)
+from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QFontComboBox,
+    QFrame, QGridLayout, QHBoxLayout, QLabel,
+    QLineEdit, QMainWindow, QMenu, QMenuBar,
+    QPushButton, QSizePolicy, QSpacerItem, QSpinBox,
+    QTextEdit, QVBoxLayout, QWidget)
 import rc.resources
 
 class Ui_MainWindow(object):
@@ -55,15 +56,25 @@ class Ui_MainWindow(object):
         self.action_print.setObjectName(u"action_print")
         self.central_widget = QWidget(MainWindow)
         self.central_widget.setObjectName(u"central_widget")
-        self.central_widget.setStyleSheet(u"QFrame {\n"
+        self.central_widget.setStyleSheet(u"QToolTip {\n"
+"	background-color: rgb(234, 234, 234);\n"
+"	color: rgb(84, 84, 84);\n"
+"}\n"
+"\n"
+"\n"
+"QFrame {\n"
 "	border: 0;\n"
 "}\n"
 "\n"
 "QPushButton {\n"
 "	color: rgb(84, 84, 84);\n"
 "	border: 0;\n"
-"	border-radius: 5px;\n"
+"	border-radius: 4px;\n"
 "	background-color: rgb(244, 244, 244);\n"
+"}\n"
+"\n"
+"QCheckBox {\n"
+"	color: rgb(84, 84, 84);\n"
 "}\n"
 "\n"
 "QPushButton::hover {\n"
@@ -128,14 +139,23 @@ class Ui_MainWindow(object):
 "}\n"
 "\n"
 "QFontComboBox::down-arrow {\n"
-"    subcontrol-position: margin;\n"
+"	subcontrol-position: margin;\n"
 "	subcontrol-origin: border;\n"
 "	border-image: url(:/icons/icons/arrows.png);\n"
 "	height: 12px;\n"
 "	width: 12px;\n"
 "	border-radius: 4px;\n"
 "	margin-top: 2px;\n"
-"}")
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"	selection-background-color: rgb(70, 140, 255);\n"
+"	selection-color: white;\n"
+"	background-color: rgb(244, 244, 244);\n"
+"	color: rgb(84, 84, 84);\n"
+"	text-size: 13px;\n"
+"}\n"
+"")
         self.combo_box_fonts.setEditable(False)
         self.combo_box_fonts.setMaxVisibleItems(5)
 
@@ -339,6 +359,226 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.frame_tools)
 
+        self.frame_find_and_replace = QFrame(self.central_widget)
+        self.frame_find_and_replace.setObjectName(u"frame_find_and_replace")
+        self.frame_find_and_replace.setMinimumSize(QSize(0, 0))
+        self.frame_find_and_replace.setStyleSheet(u"QFrame#frame_find_and_replace {\n"
+"	background-color: white;\n"
+"	border-bottom: 1px solid rgb(224, 224, 224);\n"
+"}\n"
+"\n"
+"QPushButton {\n"
+"	background-color: white;\n"
+"	border: 1px solid rgb(164, 164, 164);\n"
+"}\n"
+"\n"
+"QPushButton::pressed {\n"
+"	background-color: rgb(224, 224, 224);\n"
+"}\n"
+"\n"
+"QLineEdit {\n"
+"	margin: 0;\n"
+"	color: black;\n"
+"	border-radius: 4px;\n"
+"	border: 1px solid rgb(224, 224, 224);\n"
+"}\n"
+"\n"
+"QLineEdit#line_find {\n"
+"	border-top-right-radius: 0;\n"
+"	border-bottom-right-radius: 0;\n"
+"	border-right: 0;\n"
+"\n"
+"}")
+        self.frame_find_and_replace.setFrameShape(QFrame.StyledPanel)
+        self.frame_find_and_replace.setFrameShadow(QFrame.Raised)
+        self.verticalLayout_2 = QVBoxLayout(self.frame_find_and_replace)
+        self.verticalLayout_2.setSpacing(5)
+        self.verticalLayout_2.setObjectName(u"verticalLayout_2")
+        self.verticalLayout_2.setContentsMargins(10, 8, 8, 5)
+        self.frame_find = QFrame(self.frame_find_and_replace)
+        self.frame_find.setObjectName(u"frame_find")
+        self.frame_find.setMinimumSize(QSize(0, 20))
+        self.frame_find.setMaximumSize(QSize(16777215, 25))
+        self.frame_find.setStyleSheet(u"")
+        self.frame_find.setFrameShape(QFrame.StyledPanel)
+        self.frame_find.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_8 = QHBoxLayout(self.frame_find)
+        self.horizontalLayout_8.setSpacing(5)
+        self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
+        self.horizontalLayout_8.setContentsMargins(0, 0, 0, 0)
+        self.frame = QFrame(self.frame_find)
+        self.frame.setObjectName(u"frame")
+        self.frame.setFrameShape(QFrame.StyledPanel)
+        self.frame.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_5 = QHBoxLayout(self.frame)
+        self.horizontalLayout_5.setSpacing(0)
+        self.horizontalLayout_5.setObjectName(u"horizontalLayout_5")
+        self.horizontalLayout_5.setContentsMargins(0, 0, 0, 0)
+        self.line_find = QLineEdit(self.frame)
+        self.line_find.setObjectName(u"line_find")
+        self.line_find.setMinimumSize(QSize(0, 16))
+        self.line_find.setMaximumSize(QSize(16777215, 16))
+        font6 = QFont()
+        font6.setPointSize(11)
+        self.line_find.setFont(font6)
+        self.line_find.setStyleSheet(u"")
+
+        self.horizontalLayout_5.addWidget(self.line_find)
+
+        self.label_find_count = QLabel(self.frame)
+        self.label_find_count.setObjectName(u"label_find_count")
+        self.label_find_count.setMinimumSize(QSize(20, 16))
+        self.label_find_count.setMaximumSize(QSize(20, 16))
+        self.label_find_count.setFont(font6)
+        self.label_find_count.setStyleSheet(u"border: 1px solid rgb(224, 224, 224);\n"
+"border-left: 0;\n"
+"border-top-right-radius: 4px;\n"
+"border-bottom-right-radius: 4px;\n"
+"color: rgb(184, 184, 184);")
+
+        self.horizontalLayout_5.addWidget(self.label_find_count)
+
+
+        self.horizontalLayout_8.addWidget(self.frame)
+
+        self.frame_find_control_buttons = QFrame(self.frame_find)
+        self.frame_find_control_buttons.setObjectName(u"frame_find_control_buttons")
+        self.frame_find_control_buttons.setMinimumSize(QSize(0, 17))
+        self.frame_find_control_buttons.setMaximumSize(QSize(40, 17))
+        self.frame_find_control_buttons.setStyleSheet(u"QPushButton#button_next {\n"
+"	border-left: 0;\n"
+"	border-top-left-radius: 0;\n"
+"	border-bottom-left-radius: 0;\n"
+"}\n"
+"\n"
+"QPushButton#button_prev {\n"
+"	border-top-right-radius: 0;\n"
+"	border-bottom-right-radius: 0;\n"
+"}")
+        self.frame_find_control_buttons.setFrameShape(QFrame.StyledPanel)
+        self.frame_find_control_buttons.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_4 = QHBoxLayout(self.frame_find_control_buttons)
+        self.horizontalLayout_4.setSpacing(0)
+        self.horizontalLayout_4.setObjectName(u"horizontalLayout_4")
+        self.horizontalLayout_4.setContentsMargins(0, 0, 0, 0)
+        self.button_prev = QPushButton(self.frame_find_control_buttons)
+        self.button_prev.setObjectName(u"button_prev")
+        self.button_prev.setMinimumSize(QSize(0, 16))
+        self.button_prev.setMaximumSize(QSize(20, 16))
+        icon = QIcon()
+        icon.addFile(u":/icons/icons/arrow_left.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.button_prev.setIcon(icon)
+        self.button_prev.setIconSize(QSize(13, 13))
+
+        self.horizontalLayout_4.addWidget(self.button_prev)
+
+        self.button_next = QPushButton(self.frame_find_control_buttons)
+        self.button_next.setObjectName(u"button_next")
+        self.button_next.setMinimumSize(QSize(0, 16))
+        self.button_next.setMaximumSize(QSize(20, 16))
+        icon1 = QIcon()
+        icon1.addFile(u":/icons/icons/arrow_right.png", QSize(), QIcon.Normal, QIcon.Off)
+        self.button_next.setIcon(icon1)
+        self.button_next.setIconSize(QSize(13, 13))
+
+        self.horizontalLayout_4.addWidget(self.button_next)
+
+
+        self.horizontalLayout_8.addWidget(self.frame_find_control_buttons)
+
+        self.button_done = QPushButton(self.frame_find)
+        self.button_done.setObjectName(u"button_done")
+        self.button_done.setMinimumSize(QSize(45, 16))
+        self.button_done.setMaximumSize(QSize(54, 16))
+        self.button_done.setFont(font6)
+
+        self.horizontalLayout_8.addWidget(self.button_done)
+
+        self.check_replace = QCheckBox(self.frame_find)
+        self.check_replace.setObjectName(u"check_replace")
+        self.check_replace.setMinimumSize(QSize(0, 16))
+        self.check_replace.setMaximumSize(QSize(16777215, 16))
+        self.check_replace.setFont(font6)
+        self.check_replace.setStyleSheet(u"")
+
+        self.horizontalLayout_8.addWidget(self.check_replace)
+
+
+        self.verticalLayout_2.addWidget(self.frame_find)
+
+        self.frame_replace = QFrame(self.frame_find_and_replace)
+        self.frame_replace.setObjectName(u"frame_replace")
+        self.frame_replace.setMinimumSize(QSize(0, 16))
+        self.frame_replace.setMaximumSize(QSize(16777215, 20))
+        self.frame_replace.setFrameShape(QFrame.StyledPanel)
+        self.frame_replace.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_6 = QHBoxLayout(self.frame_replace)
+        self.horizontalLayout_6.setSpacing(10)
+        self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
+        self.horizontalLayout_6.setContentsMargins(0, 0, 0, 0)
+        self.line_find_2 = QLineEdit(self.frame_replace)
+        self.line_find_2.setObjectName(u"line_find_2")
+        self.line_find_2.setMinimumSize(QSize(0, 16))
+        self.line_find_2.setMaximumSize(QSize(16777215, 16))
+        self.line_find_2.setFont(font6)
+
+        self.horizontalLayout_6.addWidget(self.line_find_2)
+
+        self.frame_replace_all_buttons = QFrame(self.frame_replace)
+        self.frame_replace_all_buttons.setObjectName(u"frame_replace_all_buttons")
+        self.frame_replace_all_buttons.setMinimumSize(QSize(0, 17))
+        self.frame_replace_all_buttons.setMaximumSize(QSize(16777215, 17))
+        self.frame_replace_all_buttons.setStyleSheet(u"QPushButton#button_replace {\n"
+"	border-left: 0;\n"
+"	border-top-left-radius: 0;\n"
+"	border-bottom-left-radius: 0;\n"
+"}\n"
+"\n"
+"QPushButton#button_all {\n"
+"	border-top-right-radius: 0;\n"
+"	border-bottom-right-radius: 0;\n"
+"}")
+        self.frame_replace_all_buttons.setFrameShape(QFrame.StyledPanel)
+        self.frame_replace_all_buttons.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_7 = QHBoxLayout(self.frame_replace_all_buttons)
+        self.horizontalLayout_7.setSpacing(0)
+        self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
+        self.horizontalLayout_7.setContentsMargins(0, 0, 0, 0)
+        self.button_all = QPushButton(self.frame_replace_all_buttons)
+        self.button_all.setObjectName(u"button_all")
+        self.button_all.setMinimumSize(QSize(60, 16))
+        self.button_all.setMaximumSize(QSize(60, 16))
+        self.button_all.setFont(font6)
+        self.button_all.setIconSize(QSize(13, 13))
+
+        self.horizontalLayout_7.addWidget(self.button_all)
+
+        self.button_replace = QPushButton(self.frame_replace_all_buttons)
+        self.button_replace.setObjectName(u"button_replace")
+        self.button_replace.setMinimumSize(QSize(30, 16))
+        self.button_replace.setMaximumSize(QSize(30, 16))
+        self.button_replace.setFont(font6)
+        self.button_replace.setIconSize(QSize(13, 13))
+
+        self.horizontalLayout_7.addWidget(self.button_replace)
+
+
+        self.horizontalLayout_6.addWidget(self.frame_replace_all_buttons)
+
+        self.button_done_2 = QPushButton(self.frame_replace)
+        self.button_done_2.setObjectName(u"button_done_2")
+        self.button_done_2.setMinimumSize(QSize(45, 16))
+        self.button_done_2.setMaximumSize(QSize(54, 16))
+        self.button_done_2.setFont(font6)
+
+        self.horizontalLayout_6.addWidget(self.button_done_2)
+
+
+        self.verticalLayout_2.addWidget(self.frame_replace)
+
+
+        self.verticalLayout.addWidget(self.frame_find_and_replace)
+
         self.text_edit = QTextEdit(self.central_widget)
         self.text_edit.setObjectName(u"text_edit")
 
@@ -391,6 +631,8 @@ class Ui_MainWindow(object):
         self.menu_find.addAction(self.action_find_and_replace)
 
         self.retranslateUi(MainWindow)
+        self.check_replace.toggled.connect(self.frame_replace.setVisible)
+        self.check_replace.toggled.connect(self.button_done.setHidden)
 
         QMetaObject.connectSlotsByName(MainWindow)
     # setupUi
@@ -414,6 +656,9 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(tooltip)
         self.spin_box_size.setToolTip(QCoreApplication.translate("MainWindow", u"Text Size", None))
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(tooltip)
+        self.widget_color_picker.setToolTip(QCoreApplication.translate("MainWindow", u"Text Color", None))
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(tooltip)
         self.button_bold.setToolTip(QCoreApplication.translate("MainWindow", u"Bold", None))
@@ -447,6 +692,16 @@ class Ui_MainWindow(object):
         self.button_spacing.setToolTip(QCoreApplication.translate("MainWindow", u"Spacing", None))
 #endif // QT_CONFIG(tooltip)
         self.button_spacing.setText("")
+        self.line_find.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Find", None))
+        self.label_find_count.setText(QCoreApplication.translate("MainWindow", u"0", None))
+        self.button_prev.setText("")
+        self.button_next.setText("")
+        self.button_done.setText(QCoreApplication.translate("MainWindow", u"Done", None))
+        self.check_replace.setText(QCoreApplication.translate("MainWindow", u"Replace", None))
+        self.line_find_2.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Replace", None))
+        self.button_all.setText(QCoreApplication.translate("MainWindow", u"Repalce", None))
+        self.button_replace.setText(QCoreApplication.translate("MainWindow", u"All", None))
+        self.button_done_2.setText(QCoreApplication.translate("MainWindow", u"Done", None))
         self.menu_file.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
         self.menuRecent.setTitle(QCoreApplication.translate("MainWindow", u"Recent", None))
         self.menu_edit.setTitle(QCoreApplication.translate("MainWindow", u"Edit", None))

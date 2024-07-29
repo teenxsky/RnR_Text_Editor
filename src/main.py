@@ -1,8 +1,8 @@
 import sys
 
-from PySide6.QtCore import QSize, QEvent, QCoreApplication, QDir
-from PySide6.QtGui import QIcon, Qt, QColor, QFont, QKeySequence, QAction
+from PySide6.QtCore import QSize, QEvent, QCoreApplication, QDir, QRegularExpression
 from PySide6.QtWidgets import QMainWindow, QApplication, QColorDialog, QTextEdit, QMessageBox, QDialog
+from PySide6.QtGui import QIcon, Qt, QColor, QFont, QKeySequence, QAction, QTextCharFormat, QBrush, QColor, QTextCursor
 
 from design import Ui_MainWindow, Ui_Dialog
 from service_files import FileManager, get_info, add_recent_file, remove_recent_file
@@ -19,12 +19,151 @@ class RenameWidget(Ui_Dialog, QDialog):
         self.ui = Ui_Dialog()
         self.ui.setupUi(self)
         self.setWindowTitle("Rename File")
+        self.setFixedSize(470, 80)
 
     def get_filename(self):
         return self.ui.lineEdit.text()
     
     def set_filename(self, filename: str):
         self.ui.lineEdit.setText(filename)
+
+
+class FindAndReplaceWidget:
+    def __init__(self, ui: Ui_MainWindow):        
+        self.ui = ui
+        self.ui.frame_find_and_replace.setHidden(True)
+
+        self.ui.line_find.textChanged.connect(self.find_event)
+        self.ui.button_done.clicked.connect(self.close_widget)
+        self.ui.button_done_2.clicked.connect(self.close_widget)
+        self.ui.button_all.clicked.connect(self.replace_event)
+        self.ui.button_replace.clicked.connect(self.replace_all_event)
+        self.ui.button_next.clicked.connect(self._show_finded_next_occurrence)
+        self.ui.button_prev.clicked.connect(self._show_finded_previous_occurrence)
+        
+        self.show_format = QTextCharFormat()
+        self.block_format = QTextCharFormat()
+        self.show_format.setBackground(QBrush(QColor("yellow")))
+
+        self.cursor = self.ui.text_edit.textCursor()
+
+        self.regex = QRegularExpression()
+        self.indexes_of_occurrences = []
+        self.current_occurrence = 0
+
+    def run_find_frame(self):
+        self.ui.frame_find_and_replace.setHidden(False)
+        self.ui.frame_replace.setHidden(True)
+    
+    def run_find_and_replace_frame(self):
+        self.ui.frame_find_and_replace.setHidden(False)
+        self.ui.frame_replace.setHidden(False)
+        self.ui.button_done.setHidden(True)
+        self.ui.check_replace.setChecked(True)
+    
+    def close_widget(self):
+        self.ui.line_find.setText("")
+        self.ui.line_find_2.setText("")
+
+        self.ui.frame_find_and_replace.setHidden(True)
+        self._reset_setup()
+    
+    def find_event(self):
+        self._reset_setup()
+
+        if self.ui.line_find.text() == "":
+            return
+        
+        pattern = self.ui.line_find.text()
+        pattern = pattern.replace(chr(92), chr(92) + chr(92))
+        pattern = pattern.replace('.', chr(92) + '.')
+        pattern = f"""(?i){pattern}"""
+        self.regex.setPattern(pattern)
+
+        begin_index = 0
+        end_index = self.regex.match(self.ui.text_edit.toPlainText(), begin_index).capturedStart()
+
+        while end_index != -1:
+            begin_index = end_index + self.regex.match(self.ui.text_edit.toPlainText(), begin_index).capturedLength()
+            self.indexes_of_occurrences.append((end_index, begin_index))
+            end_index = self.regex.match(self.ui.text_edit.toPlainText(), begin_index).capturedStart()
+                
+        if len(self.indexes_of_occurrences) != 0:
+            self._show_count_occurrences()
+            self._show_occurrence(self.indexes_of_occurrences[0][0],
+                                  self.indexes_of_occurrences[0][1])
+            
+    def replace_event(self):
+        if len(self.indexes_of_occurrences) != 0:
+            self._block_show_occurrence()
+            old_occurrence_index = self.current_occurrence
+            
+            self.cursor.insertText(self.ui.line_find_2.text())
+
+            self.find_event()
+            self.current_occurrence = old_occurrence_index - 1 \
+                                    if len(self.indexes_of_occurrences) - 1 >= old_occurrence_index \
+                                    else len(self.indexes_of_occurrences) - 1
+            self._show_finded_next_occurrence()
+    
+    def replace_all_event(self):
+        self._block_show_occurrence()
+        for _ in range(len(self.indexes_of_occurrences)):
+            self.replace_event()
+        
+    def _show_finded_previous_occurrence(self):
+        self._block_show_occurrence()
+        old_occurrence_index = self.current_occurrence
+        self.find_event()
+        self.current_occurrence = old_occurrence_index \
+                                  if len(self.indexes_of_occurrences) - 1 >= old_occurrence_index \
+                                  else len(self.indexes_of_occurrences) - 1
+        
+        if self.current_occurrence != 0:
+
+            self.current_occurrence -= 1
+            self._show_occurrence(self.indexes_of_occurrences[self.current_occurrence][0],
+                                  self.indexes_of_occurrences[self.current_occurrence][1])
+
+    def _show_finded_next_occurrence(self):
+        self._block_show_occurrence()
+        old_occurrence_index = self.current_occurrence
+        self.find_event()
+        self.current_occurrence = old_occurrence_index \
+                                  if len(self.indexes_of_occurrences) - 1 >= old_occurrence_index \
+                                  else len(self.indexes_of_occurrences) - 1
+
+        if self.current_occurrence != len(self.indexes_of_occurrences) - 1 \
+        and self.indexes_of_occurrences != []:
+
+            self.current_occurrence += 1
+            self._show_occurrence(self.indexes_of_occurrences[self.current_occurrence][0],
+                                  self.indexes_of_occurrences[self.current_occurrence][1])
+
+    def _show_count_occurrences(self):
+        self.ui.label_find_count.setText(str(len(self.indexes_of_occurrences)))
+
+    def _show_occurrence(self, begin: int, end: int):
+        self._block_show_occurrence()
+        self.cursor.setPosition(begin, QTextCursor.MoveAnchor)
+        self.cursor.setPosition(end, QTextCursor.KeepAnchor)
+
+        self.block_format.setBackground(self.cursor.charFormat().background())
+        self.block_format.setFontPointSize(self.cursor.charFormat().fontPointSize())
+        self.show_format.setFontPointSize(self.cursor.charFormat().fontPointSize() * 1.5)
+
+        self.ui.text_edit.setTextCursor(self.cursor)
+        self.ui.text_edit.textCursor().setCharFormat(self.show_format)
+    
+    def _block_show_occurrence(self):
+        self.ui.text_edit.setTextCursor(self.cursor)
+        self.ui.text_edit.textCursor().setCharFormat(self.block_format)        
+    
+    def _reset_setup(self):
+        self.current_occurrence = 0
+        self._block_show_occurrence()
+        self.indexes_of_occurrences.clear()
+        self.ui.label_find_count.setText("0")
     
 
 class TextEditor(Ui_MainWindow, QMainWindow):
@@ -33,9 +172,10 @@ class TextEditor(Ui_MainWindow, QMainWindow):
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
-
+        
         self.rename_widget = RenameWidget()
         self.file_manager = FileManager(self.ui.text_edit)
+        self.find_and_replace_widget = FindAndReplaceWidget(self.ui)
 
         self._set_icons_svg()
         self._init_setup()
@@ -120,6 +260,14 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self.ui.action_paste.setShortcut(QKeySequence("Ctrl+V"))
 
         self.ui.action_rename.triggered.connect(self.rename_event)
+
+        self.ui.action_find.triggered.connect(self.find_and_replace_widget.run_find_frame)
+        self.ui.action_find.setShortcutContext(Qt.ShortcutContext.WindowShortcut)
+        self.ui.action_find.setShortcut(QKeySequence("Ctrl+F"))
+
+        self.ui.action_find_and_replace.triggered.connect(self.find_and_replace_widget.run_find_and_replace_frame)
+        self.ui.action_find_and_replace.setShortcutContext(Qt.ShortcutContext.WindowShortcut)
+        self.ui.action_find_and_replace.setShortcut(QKeySequence("Ctrl+Alt+F"))
 
         self.ui.action_delete.triggered.connect(self.delete_event)
 
@@ -217,8 +365,11 @@ class TextEditor(Ui_MainWindow, QMainWindow):
                 return
         
         if not recent_file_path:
-            if not self.file_manager.open_file():
+            reply = self.file_manager.open_file()
+            if reply == False:
                 self._file_not_found_message()
+            elif reply == None:
+                return
             else:
                 self.add_to_recent_files(self.file_manager.file_path)
         else:
@@ -281,6 +432,15 @@ class TextEditor(Ui_MainWindow, QMainWindow):
     def _default_settings(self):
         self.file_manager.file_path = None
         self.ui.text_edit.clear()
+
+        self.ui.spin_box_size.setValue(12)
+        self.ui.text_edit.setFontItalic(False)
+        self.ui.text_edit.setFontUnderline(False)
+        self.ui.text_edit.setTextColor(QColor("black"))
+        self.ui.text_edit.setFontWeight(QFont.Weight.Normal)
+        self.ui.combo_box_fonts.setCurrentFont("Times New Roman")
+        self.ui.text_edit.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.set_current_color(QColor('black'))
 
     @staticmethod
     def block_signals(objects, b):

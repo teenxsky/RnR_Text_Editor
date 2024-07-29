@@ -34,7 +34,7 @@ class FileManager(QMainWindow):
             file_dialog.setFileMode(QFileDialog.FileMode.ExistingFile)
 
             if file_dialog.exec() != QDialog.DialogCode.Accepted:
-                return False
+                return None
             else:
                 self.file_path = QDir.toNativeSeparators(file_dialog.selectedFiles()[0])
         
@@ -136,10 +136,6 @@ class FileManager(QMainWindow):
                                    {'File': self.file_path[:-4] + '.html'},
                                    from_format='html').save_files(self.file_path)
                 os.remove(self.file_path[:-4] + '.html')
-
-        # subprocess.Popen(['open', self.file_path 
-        #                           if os.path.isdir(self.file_path) 
-        #                           else os.path.dirname(self.file_path)])
         subprocess.run(["open", "-R", self.file_path])
 
     def _apply_save(self, text: str):

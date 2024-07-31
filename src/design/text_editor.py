@@ -19,8 +19,8 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
 from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QFontComboBox,
     QFrame, QGridLayout, QHBoxLayout, QLabel,
     QLineEdit, QMainWindow, QMenu, QMenuBar,
-    QPushButton, QSizePolicy, QSpacerItem, QSpinBox,
-    QTextEdit, QVBoxLayout, QWidget)
+    QPushButton, QScrollArea, QSizePolicy, QSpacerItem,
+    QSpinBox, QVBoxLayout, QWidget)
 import rc.resources
 
 class Ui_MainWindow(object):
@@ -153,7 +153,6 @@ class Ui_MainWindow(object):
 "	selection-color: white;\n"
 "	background-color: rgb(244, 244, 244);\n"
 "	color: rgb(84, 84, 84);\n"
-"	text-size: 13px;\n"
 "}\n"
 "")
         self.combo_box_fonts.setEditable(False)
@@ -427,14 +426,15 @@ class Ui_MainWindow(object):
 
         self.label_find_count = QLabel(self.frame)
         self.label_find_count.setObjectName(u"label_find_count")
-        self.label_find_count.setMinimumSize(QSize(20, 16))
-        self.label_find_count.setMaximumSize(QSize(20, 16))
+        self.label_find_count.setMinimumSize(QSize(63, 16))
+        self.label_find_count.setMaximumSize(QSize(63, 16))
         self.label_find_count.setFont(font6)
         self.label_find_count.setStyleSheet(u"border: 1px solid rgb(224, 224, 224);\n"
 "border-left: 0;\n"
 "border-top-right-radius: 4px;\n"
 "border-bottom-right-radius: 4px;\n"
 "color: rgb(184, 184, 184);")
+        self.label_find_count.setAlignment(Qt.AlignRight|Qt.AlignTrailing|Qt.AlignVCenter)
 
         self.horizontalLayout_5.addWidget(self.label_find_count)
 
@@ -494,6 +494,14 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_8.addWidget(self.button_done)
 
+        self.check_regex = QCheckBox(self.frame_find)
+        self.check_regex.setObjectName(u"check_regex")
+        self.check_regex.setMinimumSize(QSize(63, 16))
+        self.check_regex.setMaximumSize(QSize(63, 16))
+        self.check_regex.setFont(font6)
+
+        self.horizontalLayout_8.addWidget(self.check_regex)
+
         self.check_replace = QCheckBox(self.frame_find)
         self.check_replace.setObjectName(u"check_replace")
         self.check_replace.setMinimumSize(QSize(0, 16))
@@ -516,25 +524,25 @@ class Ui_MainWindow(object):
         self.horizontalLayout_6.setSpacing(10)
         self.horizontalLayout_6.setObjectName(u"horizontalLayout_6")
         self.horizontalLayout_6.setContentsMargins(0, 0, 0, 0)
-        self.line_find_2 = QLineEdit(self.frame_replace)
-        self.line_find_2.setObjectName(u"line_find_2")
-        self.line_find_2.setMinimumSize(QSize(0, 16))
-        self.line_find_2.setMaximumSize(QSize(16777215, 16))
-        self.line_find_2.setFont(font6)
+        self.line_replace = QLineEdit(self.frame_replace)
+        self.line_replace.setObjectName(u"line_replace")
+        self.line_replace.setMinimumSize(QSize(0, 16))
+        self.line_replace.setMaximumSize(QSize(16777215, 16))
+        self.line_replace.setFont(font6)
 
-        self.horizontalLayout_6.addWidget(self.line_find_2)
+        self.horizontalLayout_6.addWidget(self.line_replace)
 
         self.frame_replace_all_buttons = QFrame(self.frame_replace)
         self.frame_replace_all_buttons.setObjectName(u"frame_replace_all_buttons")
         self.frame_replace_all_buttons.setMinimumSize(QSize(0, 17))
         self.frame_replace_all_buttons.setMaximumSize(QSize(16777215, 17))
-        self.frame_replace_all_buttons.setStyleSheet(u"QPushButton#button_replace {\n"
+        self.frame_replace_all_buttons.setStyleSheet(u"QPushButton#button_all {\n"
 "	border-left: 0;\n"
 "	border-top-left-radius: 0;\n"
 "	border-bottom-left-radius: 0;\n"
 "}\n"
 "\n"
-"QPushButton#button_all {\n"
+"QPushButton#button_replace {\n"
 "	border-top-right-radius: 0;\n"
 "	border-bottom-right-radius: 0;\n"
 "}")
@@ -544,23 +552,23 @@ class Ui_MainWindow(object):
         self.horizontalLayout_7.setSpacing(0)
         self.horizontalLayout_7.setObjectName(u"horizontalLayout_7")
         self.horizontalLayout_7.setContentsMargins(0, 0, 0, 0)
-        self.button_all = QPushButton(self.frame_replace_all_buttons)
-        self.button_all.setObjectName(u"button_all")
-        self.button_all.setMinimumSize(QSize(60, 16))
-        self.button_all.setMaximumSize(QSize(60, 16))
-        self.button_all.setFont(font6)
-        self.button_all.setIconSize(QSize(13, 13))
-
-        self.horizontalLayout_7.addWidget(self.button_all)
-
         self.button_replace = QPushButton(self.frame_replace_all_buttons)
         self.button_replace.setObjectName(u"button_replace")
-        self.button_replace.setMinimumSize(QSize(30, 16))
-        self.button_replace.setMaximumSize(QSize(30, 16))
+        self.button_replace.setMinimumSize(QSize(60, 16))
+        self.button_replace.setMaximumSize(QSize(60, 16))
         self.button_replace.setFont(font6)
         self.button_replace.setIconSize(QSize(13, 13))
 
         self.horizontalLayout_7.addWidget(self.button_replace)
+
+        self.button_all = QPushButton(self.frame_replace_all_buttons)
+        self.button_all.setObjectName(u"button_all")
+        self.button_all.setMinimumSize(QSize(30, 16))
+        self.button_all.setMaximumSize(QSize(30, 16))
+        self.button_all.setFont(font6)
+        self.button_all.setIconSize(QSize(13, 13))
+
+        self.horizontalLayout_7.addWidget(self.button_all)
 
 
         self.horizontalLayout_6.addWidget(self.frame_replace_all_buttons)
@@ -579,10 +587,19 @@ class Ui_MainWindow(object):
 
         self.verticalLayout.addWidget(self.frame_find_and_replace)
 
-        self.text_edit = QTextEdit(self.central_widget)
-        self.text_edit.setObjectName(u"text_edit")
+        self.scrollArea = QScrollArea(self.central_widget)
+        self.scrollArea.setObjectName(u"scrollArea")
+        self.scrollArea.setWidgetResizable(True)
+        self.scrollAreaWidgetContents = QWidget()
+        self.scrollAreaWidgetContents.setObjectName(u"scrollAreaWidgetContents")
+        self.scrollAreaWidgetContents.setGeometry(QRect(0, 0, 770, 264))
+        self.verticalLayout_3 = QVBoxLayout(self.scrollAreaWidgetContents)
+        self.verticalLayout_3.setSpacing(0)
+        self.verticalLayout_3.setObjectName(u"verticalLayout_3")
+        self.verticalLayout_3.setContentsMargins(0, 0, 0, 0)
+        self.scrollArea.setWidget(self.scrollAreaWidgetContents)
 
-        self.verticalLayout.addWidget(self.text_edit)
+        self.verticalLayout.addWidget(self.scrollArea)
 
         MainWindow.setCentralWidget(self.central_widget)
         self.menubar = QMenuBar(MainWindow)
@@ -693,14 +710,15 @@ class Ui_MainWindow(object):
 #endif // QT_CONFIG(tooltip)
         self.button_spacing.setText("")
         self.line_find.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Find", None))
-        self.label_find_count.setText(QCoreApplication.translate("MainWindow", u"0", None))
+        self.label_find_count.setText(QCoreApplication.translate("MainWindow", u"1000/1000", None))
         self.button_prev.setText("")
         self.button_next.setText("")
         self.button_done.setText(QCoreApplication.translate("MainWindow", u"Done", None))
+        self.check_regex.setText(QCoreApplication.translate("MainWindow", u"Regex", None))
         self.check_replace.setText(QCoreApplication.translate("MainWindow", u"Replace", None))
-        self.line_find_2.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Replace", None))
-        self.button_all.setText(QCoreApplication.translate("MainWindow", u"Repalce", None))
-        self.button_replace.setText(QCoreApplication.translate("MainWindow", u"All", None))
+        self.line_replace.setPlaceholderText(QCoreApplication.translate("MainWindow", u"Replace", None))
+        self.button_replace.setText(QCoreApplication.translate("MainWindow", u"Repalce", None))
+        self.button_all.setText(QCoreApplication.translate("MainWindow", u"All", None))
         self.button_done_2.setText(QCoreApplication.translate("MainWindow", u"Done", None))
         self.menu_file.setTitle(QCoreApplication.translate("MainWindow", u"File", None))
         self.menuRecent.setTitle(QCoreApplication.translate("MainWindow", u"Recent", None))

@@ -167,7 +167,6 @@ QComboBox QAbstractItemView {
 	selection-color: white;
 	background-color: rgb(244, 244, 244);
 	color: rgb(84, 84, 84);
-	text-size: 13px;
 }
 </string>
          </property>
@@ -800,13 +799,13 @@ QLineEdit#line_find {
               <widget class="QLabel" name="label_find_count">
                <property name="minimumSize">
                 <size>
-                 <width>20</width>
+                 <width>63</width>
                  <height>16</height>
                 </size>
                </property>
                <property name="maximumSize">
                 <size>
-                 <width>20</width>
+                 <width>63</width>
                  <height>16</height>
                 </size>
                </property>
@@ -823,7 +822,10 @@ border-bottom-right-radius: 4px;
 color: rgb(184, 184, 184);</string>
                </property>
                <property name="text">
-                <string>0</string>
+                <string>1000/1000</string>
+               </property>
+               <property name="alignment">
+                <set>Qt::AlignRight|Qt::AlignTrailing|Qt::AlignVCenter</set>
                </property>
               </widget>
              </item>
@@ -964,6 +966,30 @@ QPushButton#button_prev {
            </widget>
           </item>
           <item>
+           <widget class="QCheckBox" name="check_regex">
+            <property name="minimumSize">
+             <size>
+              <width>63</width>
+              <height>16</height>
+             </size>
+            </property>
+            <property name="maximumSize">
+             <size>
+              <width>63</width>
+              <height>16</height>
+             </size>
+            </property>
+            <property name="font">
+             <font>
+              <pointsize>11</pointsize>
+             </font>
+            </property>
+            <property name="text">
+             <string>Regex</string>
+            </property>
+           </widget>
+          </item>
+          <item>
            <widget class="QCheckBox" name="check_replace">
             <property name="minimumSize">
              <size>
@@ -1030,7 +1056,7 @@ QPushButton#button_prev {
            <number>0</number>
           </property>
           <item>
-           <widget class="QLineEdit" name="line_find_2">
+           <widget class="QLineEdit" name="line_replace">
             <property name="minimumSize">
              <size>
               <width>0</width>
@@ -1068,13 +1094,13 @@ QPushButton#button_prev {
              </size>
             </property>
             <property name="styleSheet">
-             <string notr="true">QPushButton#button_replace {
+             <string notr="true">QPushButton#button_all {
 	border-left: 0;
 	border-top-left-radius: 0;
 	border-bottom-left-radius: 0;
 }
 
-QPushButton#button_all {
+QPushButton#button_replace {
 	border-top-right-radius: 0;
 	border-bottom-right-radius: 0;
 }</string>
@@ -1102,7 +1128,7 @@ QPushButton#button_all {
               <number>0</number>
              </property>
              <item>
-              <widget class="QPushButton" name="button_all">
+              <widget class="QPushButton" name="button_replace">
                <property name="minimumSize">
                 <size>
                  <width>60</width>
@@ -1132,7 +1158,7 @@ QPushButton#button_all {
               </widget>
              </item>
              <item>
-              <widget class="QPushButton" name="button_replace">
+              <widget class="QPushButton" name="button_all">
                <property name="minimumSize">
                 <size>
                  <width>30</width>
@@ -1195,7 +1221,38 @@ QPushButton#button_all {
      </widget>
     </item>
     <item>
-     <widget class="QTextEdit" name="text_edit"/>
+     <widget class="QScrollArea" name="scrollArea">
+      <property name="widgetResizable">
+       <bool>true</bool>
+      </property>
+      <widget class="QWidget" name="scrollAreaWidgetContents">
+       <property name="geometry">
+        <rect>
+         <x>0</x>
+         <y>0</y>
+         <width>770</width>
+         <height>264</height>
+        </rect>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <property name="spacing">
+         <number>0</number>
+        </property>
+        <property name="leftMargin">
+         <number>0</number>
+        </property>
+        <property name="topMargin">
+         <number>0</number>
+        </property>
+        <property name="rightMargin">
+         <number>0</number>
+        </property>
+        <property name="bottomMargin">
+         <number>0</number>
+        </property>
+       </layout>
+      </widget>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -1364,7 +1421,7 @@ QPushButton#button_all {
      <y>76</y>
     </hint>
     <hint type="destinationlabel">
-     <x>380</x>
+     <x>677</x>
      <y>76</y>
     </hint>
    </hints>

@@ -1,12 +1,10 @@
 import os
 import subprocess
 
-import convertapi
-import mammoth
-
 from PySide6.QtWidgets import *
 from PySide6.QtCore import QFile, QDir, QMimeDatabase
 
+import convertapi
 convertapi.api_secret = 'Okzibdk295nTMi3e'
 
 MIME_TYPES = ['application/vnd.openxmlformats-officedocument.wordprocessingml.document',
@@ -18,7 +16,7 @@ MIME_TYPES = ['application/vnd.openxmlformats-officedocument.wordprocessingml.do
 
 
 class FileManager(QMainWindow):
-    def __init__(self, text_widget: QTextEdit, *args, **kwargs) -> None:
+    def __init__(self, text_widget, *args, **kwargs) -> None:
         super(FileManager, self).__init__(*args, **kwargs)
         self.text_widget = text_widget
 
@@ -46,26 +44,37 @@ class FileManager(QMainWindow):
         self.mime_type_name = QMimeDatabase().mimeTypeForFileNameAndData(self.file_path, file.readAll()).name()
 
         if self.mime_type_name == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-            with open(self.file_path, 'rb') as docx_file:
-                result = mammoth.convert_to_html(docx_file)
-                self.text_widget.setHtml(result.value)
+            converted_html_path = self.file_path.split('.')[0] + '.html'
+
+            convertapi.convert('html',
+                               {'File': self.file_path},
+                               from_format='docx').save_files(
+                               converted_html_path[:-len(QDir(converted_html_path).dirName())])
+            
+            text = open(converted_html_path, 'r', encoding='utf-8').read()
+            self.text_widget.setHtml(text)
+            os.remove(converted_html_path)
 
         elif self.mime_type_name == 'application/msword':
-            converted_html_path = self.file_path[:-4] + '.html'
+            converted_html_path = self.file_path.split('.')[0] + '.html'
+
             convertapi.convert('html',
                                {'File': self.file_path},
                                from_format='doc').save_files(
-                converted_html_path[:-len(converted_html_path.split('/')[-1])])
+                               converted_html_path[:-len(QDir(converted_html_path).dirName())])
+            
             text = open(converted_html_path, 'r', encoding='utf-8').read()
             self.text_widget.setHtml(text)
             os.remove(converted_html_path)
 
         elif self.mime_type_name == 'application/pdf':
-            converted_html_path = self.file_path[:-4] + '.html'
+            converted_html_path = self.file_path.split('.')[0] + '.html'
+
             convertapi.convert('html',
                                {'File': self.file_path},
                                from_format='pdf').save_files(
-                converted_html_path[:-len(converted_html_path.split('/')[-1])])
+                               converted_html_path[:-len(QDir(converted_html_path).dirName())])
+            
             text = open(converted_html_path, 'r', encoding='utf-8').read()
             self.text_widget.setHtml(text)
             os.remove(converted_html_path)
@@ -101,41 +110,40 @@ class FileManager(QMainWindow):
         selected_mime_type = file_dialog.selectedMimeTypeFilter()
 
         if selected_mime_type == 'text/plain':
-            text = self.text_widget.toPlainText()
+            text = self.text_widget.document().toPlainText()
             self._apply_save(text)
 
         elif selected_mime_type == 'text/markdown':
-            text = self.text_widget.toMarkdown()
+            text = self.text_widget.document().toMarkdown()
             self._apply_save(text)
 
         else:
-            text = self.text_widget.toHtml()
+            text = self.text_widget.document().toHtml()
             if selected_mime_type == 'text/html':
                 self._apply_save(text)
 
-            elif selected_mime_type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-                with open(self.file_path[:-5] + '.html', 'w') as file:
+            elif selected_mime_type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' or \
+            selected_mime_type == 'application/msword':
+                
+                with open(self.file_path.split('.')[0] + '.html', 'w') as file:
                     file.write(text)
-                convertapi.convert('docx',
-                                   {'File': self.file_path[:-5] + '.html'},
-                                   from_format='html').save_files(self.file_path)
-                os.remove(self.file_path[:-5] + '.html')
 
-            elif selected_mime_type == 'application/msword':
-                with open(self.file_path[:-4] + '.html', 'w') as file:
-                    file.write(text)
                 convertapi.convert('docx',
-                                   {'File': self.file_path[:-4] + '.html'},
+                                   {'File': self.file_path.split('.')[0] + '.html'},
                                    from_format='html').save_files(self.file_path)
-                os.remove(self.file_path[:-4] + '.html')
+                
+                os.remove(self.file_path.split('.')[0] + '.html')
 
             elif selected_mime_type == 'application/pdf':
-                with open(self.file_path[:-4] + '.html', 'w') as file:
+                with open(self.file_path.split('.')[0] + '.html', 'w') as file:
                     file.write(text)
+
                 convertapi.convert('pdf',
-                                   {'File': self.file_path[:-4] + '.html'},
+                                   {'File': self.file_path.split('.')[0] + '.html'},
                                    from_format='html').save_files(self.file_path)
-                os.remove(self.file_path[:-4] + '.html')
+                
+                os.remove(self.file_path.split('.')[0] + '.html')
+        
         subprocess.run(["open", "-R", self.file_path])
 
     def _apply_save(self, text: str):

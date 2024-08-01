@@ -2,10 +2,11 @@ import os
 import sys
 import uuid
 
-from PySide6.QtCore import QSize, QEvent, QCoreApplication, QPoint, Signal, QRegularExpression, QDir
+from PySide6.QtCore import QSize, QEvent, QCoreApplication, QPoint, Signal, QRegularExpression, QDir, QSizeF
 from PySide6.QtGui import QIcon, Qt, QColor, QFont, QKeySequence, QAction, QFontDatabase, QImage, QTextDocument, \
-    QTextCharFormat, QBrush, QTextCursor
-from PySide6.QtWidgets import QMainWindow, QApplication, QColorDialog, QTextEdit, QMessageBox, QDialog, QWidget
+    QTextCharFormat, QBrush, QTextCursor, QTextFrameFormat, QPainter, QPen
+from PySide6.QtWidgets import QMainWindow, QApplication, QColorDialog, QTextEdit, QMessageBox, QDialog, QWidget, \
+    QFrame
 
 from design import Ui_MainWindow, Ui_DialogSpacing, Ui_Dialog
 from service_files import FileManager, get_info, add_recent_file, remove_recent_file
@@ -17,16 +18,76 @@ IMAGE_EXTENSIONS = ['.jpg', '.png', '.bmp']
 
 
 class TextEdit(QTextEdit):
+    def __init__(self, size: QSize):
+        super(TextEdit, self).__init__()
 
+        self.setFixedSize(size)
+        self.page_width = get_info()["PAGE_WIDTH"]
+        self.page_height = get_info()["PAGE_HEIGHT"]
+        self.page_top_margin = get_info()["PAGE_TOP_MARGIN"]
+        self.page_bottom_margin = get_info()["PAGE_BOTTOM_MARGIN"]
+        self.page_side_margin = int(size.width() - self.page_width) / 2
+
+        self.setFrameStyle(QFrame.NoFrame)
+        self.setVerticalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setHorizontalScrollBarPolicy(Qt.ScrollBarAlwaysOff)
+        self.setStyleSheet("QTextEdit { background-color: rgb(231, 231, 231); }")
+    
+        self.textChanged.connect(self.set_pages_size)
+
+        self._frame_setup()
+    
+    def _frame_setup(self):
+        frame_format = QTextFrameFormat()
+        frame_format.setTopMargin(self.page_top_margin + 60)
+        frame_format.setLeftMargin(self.page_side_margin + 40)
+        frame_format.setRightMargin(-(self.page_side_margin) + 40)
+        frame_format.setBottomMargin(self.page_bottom_margin + 60)
+
+        self.document().rootFrame().setFrameFormat(frame_format)
+
+    def set_pages_size(self): 
+        self.document().setPageSize(QSizeF(self.page_width, self.page_height))
+        self.setFixedHeight(self.document().pageCount() * self.page_height)
+    
+    def setHtml(self, html: str):
+        self.document().setHtml(html)
+        self._frame_setup()
+    
+    def setMarkdown(self, markdown: str):
+        self.document().setMarkdown(markdown)
+        self._frame_setup()
+
+    def setPlainText(self, text: str):
+        self.document().setPlainText(text)
+        self._frame_setup()
+    
+    def paintEvent(self, event): 
+        rect_painter = QPainter(self.viewport()) 
+        rect_painter.setFont(QFont("times", 18))
+        rect_painter.setBrush(QBrush(QColor("white"), Qt.BrushStyle.SolidPattern))
+         
+        for i in range(self.document().pageCount()): 
+            rect_painter.setPen(QPen(QColor(231, 231, 231), 1)) 
+            rect_painter.drawRect(self.page_side_margin, 
+                                  i * self.page_height + self.page_top_margin, 
+                                  self.page_width, 
+                                  self.page_height - self.page_bottom_margin)
+            
+            rect_painter.setPen(QPen(QColor(109, 109, 109), 1)) 
+            rect_painter.drawText(self.page_side_margin + int(self.page_width / 2), 
+                                  (i + 1) * self.page_height + self.page_top_margin - 63,
+                                  str(i + 1))
+ 
+        super(TextEdit, self).paintEvent(event)
+     
     def canInsertFromMimeData(self, source):
-
         if source.hasImage():
             return True
         else:
             return super(TextEdit, self).canInsertFromMimeData(source)
 
     def insertFromMimeData(self, source):
-
         cursor = self.textCursor()
         document = self.document()
 
@@ -168,12 +229,12 @@ class FindAndReplaceWidget:
             return
 
         begin_index = 0
-        end_index = self.regex.match(self.text_edit.toPlainText(), begin_index).capturedStart()
+        end_index = self.regex.match(self.text_edit.document().toPlainText(), begin_index).capturedStart()
 
         while end_index != -1:
-            begin_index = end_index + self.regex.match(self.text_edit.toPlainText(), begin_index).capturedLength()
+            begin_index = end_index + self.regex.match(self.text_edit.document().toPlainText(), begin_index).capturedLength()
             self.indexes_of_occurrences.append((end_index, begin_index))
-            end_index = self.regex.match(self.text_edit.toPlainText(), begin_index).capturedStart()
+            end_index = self.regex.match(self.text_edit.document().toPlainText(), begin_index).capturedStart()
         
         if len(self.indexes_of_occurrences) != 0 and show_current:
             self._show_occurrence(self.indexes_of_occurrences[0][0],
@@ -230,6 +291,7 @@ class FindAndReplaceWidget:
 
     def _show_occurrence(self, begin: int, end: int):
         self._block_show_occurrence()
+
         self.cursor.setPosition(begin, QTextCursor.MoveAnchor)
         self.cursor.setPosition(end, QTextCursor.KeepAnchor)
 
@@ -238,13 +300,13 @@ class FindAndReplaceWidget:
         self.show_format.setFontPointSize(self.cursor.charFormat().fontPointSize() * 1.5)
 
         self.text_edit.setTextCursor(self.cursor)
-        self.text_edit.textCursor().setCharFormat(self.show_format)
+        self.text_edit.textCursor().mergeCharFormat(self.show_format)
 
         self._show_count_occurrences()
 
     def _block_show_occurrence(self):
         self.text_edit.setTextCursor(self.cursor)
-        self.text_edit.textCursor().setCharFormat(self.block_format)
+        self.text_edit.textCursor().mergeCharFormat(self.block_format)
         self.cursor.clearSelection()
         self.text_edit.setTextCursor(self.cursor)
         
@@ -265,12 +327,13 @@ class FindAndReplaceWidget:
 
 class TextEditor(Ui_MainWindow, QMainWindow):
     def __init__(self):
-        super(Ui_MainWindow, self).__init__()
+        super(TextEditor, self).__init__()
 
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
-        self.text_edit = QTextEdit()
+        self.text_edit = TextEdit(self.maximumSize())
+
         self.rename_widget = RenameWidget()
         self.file_manager = FileManager(self.text_edit)
         self.spacing_dialog = SpacingDialog(self)
@@ -334,9 +397,10 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self.ui.button_spacing.setIconSize(QSize(12, 12))
 
     def _init_setup(self):
-
         self.ui.verticalLayout_3.addWidget(self.text_edit)
-
+        
+        self.text_edit.cursorPositionChanged.connect(self._scroll_to_cursor)
+        
         self.spacing_dialog.hide()
         self.spacing_dialog.cancel_clicked.connect(self.close_spacing_dialog)
         self.ui.frame_find_and_replace.setHidden(True)
@@ -352,10 +416,10 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self.ui.combo_box_fonts.currentFontChanged.connect(self.text_edit.setCurrentFont)
         self.ui.spin_box_size.valueChanged.connect(lambda s: self.text_edit.setFontPointSize(float(s)))
 
-        self.ui.button_left.toggled.connect(lambda: self.text_edit.setAlignment(Qt.AlignmentFlag.AlignLeft))
-        self.ui.button_center.toggled.connect(lambda: self.text_edit.setAlignment(Qt.AlignmentFlag.AlignCenter))
-        self.ui.button_right.toggled.connect(lambda: self.text_edit.setAlignment(Qt.AlignmentFlag.AlignRight))
-        self.ui.button_justify.toggled.connect(lambda: self.text_edit.setAlignment(Qt.AlignmentFlag.AlignJustify))
+        self.ui.button_left.toggled.connect(self.text_align_event)
+        self.ui.button_center.toggled.connect(self.text_align_event)
+        self.ui.button_right.toggled.connect(self.text_align_event)
+        self.ui.button_justify.toggled.connect(self.text_align_event)
 
         self.ui.button_bold.toggled.connect(
             lambda x: self.text_edit.setFontWeight(QFont.Weight.Bold if x else QFont.Weight.Normal))
@@ -430,6 +494,15 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self._update_title()
         self.update_recent_files()
 
+    def _scroll_to_cursor(self):
+        if self.text_edit.cursorRect().y() > self.height() - self.ui.frame_tools.height() + self.ui.scrollArea.verticalScrollBar().value() - 15:
+            new_value = self.ui.scrollArea.verticalScrollBar().value() + int((self.height() - self.ui.frame_tools.height()) / 2)
+            self.ui.scrollArea.verticalScrollBar().setValue(new_value)
+
+        elif self.text_edit.cursorRect().y() < self.ui.scrollArea.verticalScrollBar().value():
+            new_value = self.ui.scrollArea.verticalScrollBar().value() - int((self.height() - self.ui.frame_tools.height()) / 2)
+            self.ui.scrollArea.verticalScrollBar().setValue(new_value)
+
     def eventFilter(self, watched, event):
         if watched == self.ui.widget_color_picker:
             if event.type() == QEvent.Type.HoverLeave:
@@ -450,6 +523,7 @@ class TextEditor(Ui_MainWindow, QMainWindow):
     def resizeEvent(self, event):
         self.spacing_dialog.move(QPoint(self.size().width() // 2 - self.spacing_dialog.size().width() // 2,
                                         self.size().height() // 2 - self.spacing_dialog.size().height() // 2))
+        super(TextEditor, self).resizeEvent(event)
 
     def add_to_recent_files(self, path: str):
         add_recent_file(path)
@@ -472,7 +546,7 @@ class TextEditor(Ui_MainWindow, QMainWindow):
                     return
 
     def update_recent_files(self):
-        recent_files = get_info()["recent_files"]
+        recent_files = get_info()["RECENT_FILES"]
 
         if not recent_files:
             return
@@ -490,6 +564,23 @@ class TextEditor(Ui_MainWindow, QMainWindow):
 
             RECENT_FILE_ACTIONS.append(new_action)
             self.ui.menuRecent.addAction(new_action)
+
+    def text_align_event(self):
+        action_name = self.sender().objectName()
+
+        if action_name == "button_left":
+            self.text_edit.setAlignment(Qt.AlignLeft | Qt.AlignAbsolute)
+
+        elif action_name == "button_center":
+            self.text_edit.setAlignment(Qt.AlignHCenter)
+
+        elif action_name == "button_right":
+            self.text_edit.setAlignment(Qt.AlignRight | Qt.AlignAbsolute)
+
+        elif action_name == "button_justify":
+            self.text_edit.setAlignment(Qt.AlignJustify)
+        
+        self.text_edit.set_pages_size()
 
     def delete_event(self):
         cursor = self.text_edit.textCursor()
@@ -527,7 +618,7 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self._update_title()
 
     def open_recent_file_event(self):
-        recent_files = get_info()["recent_files"]
+        recent_files = get_info()["RECENT_FILES"]
         for file in recent_files:
             if file.endswith(self.sender().text()):
                 self.open_file_event(recent_file_path=file)
@@ -565,7 +656,7 @@ class TextEditor(Ui_MainWindow, QMainWindow):
 
                 self.file_manager.file_path = directory + new_filename
 
-                for path in get_info()["recent_files"]:
+                for path in get_info()["RECENT_FILES"]:
                     if path == directory + old_filename:
                         self.remove_recent_files(remove_file_path=directory + old_filename)
                         self.add_to_recent_files(path=self.file_manager.file_path)
@@ -582,6 +673,7 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self.text_edit.clear()
 
         self.ui.spin_box_size.setValue(12)
+        self.text_edit.setFontPointSize(12)
         self.text_edit.setFontItalic(False)
         self.text_edit.setFontUnderline(False)
         self.text_edit.setTextColor(QColor("black"))

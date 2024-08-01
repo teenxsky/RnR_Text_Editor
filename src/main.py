@@ -646,9 +646,9 @@ class TextEditor(Ui_MainWindow, QMainWindow):
             new_filename = self.rename_widget.get_filename()
 
             if (self.file_manager.file_path is None) or (file_extension == ""):
-                self.file_manager.file_path = new_filename.split('.')[0]
+                self.file_manager.file_path = '.'.join(new_filename.split('.')[:-1])
             else:
-                new_filename = self.rename_widget.get_filename().split('.')[0] + file_extension
+                new_filename = '.'.join(self.rename_widget.get_filename().split('.')[:-1]) + file_extension
                 old_filename = QDir(self.file_manager.file_path).dirName()
 
                 directory = self.file_manager.file_path[:-len(old_filename)]

@@ -44,7 +44,7 @@ class FileManager(QMainWindow):
         self.mime_type_name = QMimeDatabase().mimeTypeForFileNameAndData(self.file_path, file.readAll()).name()
 
         if self.mime_type_name == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document':
-            converted_html_path = self.file_path.split('.')[0] + '.html'
+            converted_html_path = '.'.join(self.file_path.split('.')[:-1]) + '.html'
 
             convertapi.convert('html',
                                {'File': self.file_path},
@@ -56,7 +56,7 @@ class FileManager(QMainWindow):
             os.remove(converted_html_path)
 
         elif self.mime_type_name == 'application/msword':
-            converted_html_path = self.file_path.split('.')[0] + '.html'
+            converted_html_path = '.'.join(self.file_path.split('.')[:-1]) + '.html'
 
             convertapi.convert('html',
                                {'File': self.file_path},
@@ -68,7 +68,7 @@ class FileManager(QMainWindow):
             os.remove(converted_html_path)
 
         elif self.mime_type_name == 'application/pdf':
-            converted_html_path = self.file_path.split('.')[0] + '.html'
+            converted_html_path = '.'.join(self.file_path.split('.')[:-1]) + '.html'
 
             convertapi.convert('html',
                                {'File': self.file_path},
@@ -125,24 +125,24 @@ class FileManager(QMainWindow):
             elif selected_mime_type == 'application/vnd.openxmlformats-officedocument.wordprocessingml.document' or \
             selected_mime_type == 'application/msword':
                 
-                with open(self.file_path.split('.')[0] + '.html', 'w') as file:
+                with open('.'.join(self.file_path.split('.')[:-1]) + '.html', 'w') as file:
                     file.write(text)
 
                 convertapi.convert('docx',
-                                   {'File': self.file_path.split('.')[0] + '.html'},
+                                   {'File': '.'.join(self.file_path.split('.')[:-1]) + '.html'},
                                    from_format='html').save_files(self.file_path)
                 
-                os.remove(self.file_path.split('.')[0] + '.html')
+                os.remove('.'.join(self.file_path.split('.')[:-1]) + '.html')
 
             elif selected_mime_type == 'application/pdf':
-                with open(self.file_path.split('.')[0] + '.html', 'w') as file:
+                with open('.'.join(self.file_path.split('.')[:-1]) + '.html', 'w') as file:
                     file.write(text)
 
                 convertapi.convert('pdf',
-                                   {'File': self.file_path.split('.')[0] + '.html'},
+                                   {'File': '.'.join(self.file_path.split('.')[:-1]) + '.html'},
                                    from_format='html').save_files(self.file_path)
                 
-                os.remove(self.file_path.split('.')[0] + '.html')
+                os.remove('.'.join(self.file_path.split('.')[:-1]) + '.html')
         
         subprocess.run(["open", "-R", self.file_path])
 

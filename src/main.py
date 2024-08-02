@@ -57,7 +57,7 @@ from PySide6.QtWidgets import (
 from design import Ui_MainWindow, Ui_DialogSpacing, Ui_Dialog, Ui_DialogPasteLink
 from service_files import FileManager, get_info, add_recent_file, remove_recent_file
 
-import rc.resources
+from rc import resources
 
 RECENT_FILE_ACTIONS = []
 IMAGE_EXTENSIONS = [".jpg", ".png", ".bmp"]
@@ -503,6 +503,12 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self.spacing_dialog = SpacingDialog(self)
         self.find_and_replace_widget = FindAndReplaceWidget(self.ui, self.text_edit)
 
+        if sys.platform == 'darwin':
+            text_edit_palette = self.text_edit.palette()
+            text_edit_palette.setColor(QPalette.Base, QColor(Qt.white))
+            text_edit_palette.setColor(QPalette.Text, QColor(Qt.black))
+            self.text_edit.setPalette(text_edit_palette)
+
         self.spacing_pref = {
             "prop_height": self.spacing_dialog.ui.spin_prop_height.value(),
             "line_height_1": self.spacing_dialog.ui.spin_line_height_1.value(),
@@ -577,6 +583,8 @@ class TextEditor(Ui_MainWindow, QMainWindow):
     def _init_setup(self):
 
         self.ui.verticalLayout_3.addWidget(self.text_edit)
+
+        self.text_edit.cursorPositionChanged.connect(self._scroll_to_cursor)
 
         # self.text_edit.currentCharFormatChanged.connect(self.update_format)
 
@@ -825,6 +833,8 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self.update_format()
         self.update_recent_files()
 
+        self.text_edit.document().setModified(False)
+
     def eventFilter(self, watched, event):
         if watched == self.ui.widget_color_picker:
             if event.type() == QEvent.Type.HoverLeave:
@@ -1010,6 +1020,7 @@ class TextEditor(Ui_MainWindow, QMainWindow):
     def save_file_event(self):
         self.file_manager.save_file()
         self._update_title()
+        self.text_edit.document().setModified(False)
 
     def print_file_event(self):
         self.text_edit.print_setup(True)
@@ -1077,9 +1088,9 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self.merge_format_on_word_or_selection(fmt)
 
     def set_italic(self):
-        if self.sender() == self.ui.action_bold:
+        if self.sender() == self.ui.action_italic:
             self.ui.button_italic.setChecked(self.ui.action_italic.isChecked())
-        elif self.sender() == self.ui.button_bold:
+        elif self.sender() == self.ui.button_italic:
             self.ui.action_italic.setChecked(self.ui.button_italic.isChecked())
 
         fmt = QTextCharFormat()
@@ -1088,9 +1099,9 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self.merge_format_on_word_or_selection(fmt)
 
     def set_underline(self):
-        if self.sender() == self.ui.action_bold:
+        if self.sender() == self.ui.action_underline:
             self.ui.button_underline.setChecked(self.ui.action_underline.isChecked())
-        elif self.sender() == self.ui.button_bold:
+        elif self.sender() == self.ui.button_underline:
             self.ui.action_underline.setChecked(self.ui.button_underline.isChecked())
 
         fmt = QTextCharFormat()

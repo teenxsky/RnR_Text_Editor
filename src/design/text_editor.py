@@ -16,12 +16,12 @@ from PySide6.QtGui import (QAction, QBrush, QColor, QConicalGradient,
     QIcon, QImage, QKeySequence, QLinearGradient,
     QPainter, QPalette, QPixmap, QRadialGradient,
     QTransform)
-from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QFontComboBox,
-    QFrame, QGridLayout, QHBoxLayout, QLabel,
-    QLineEdit, QMainWindow, QMenu, QMenuBar,
-    QPushButton, QScrollArea, QSizePolicy, QSpacerItem,
-    QSpinBox, QVBoxLayout, QWidget)
-import rc.resources
+from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QComboBox,
+    QFontComboBox, QFrame, QGridLayout, QHBoxLayout,
+    QLabel, QLineEdit, QMainWindow, QMenu,
+    QMenuBar, QPushButton, QScrollArea, QSizePolicy,
+    QSpacerItem, QSpinBox, QVBoxLayout, QWidget)
+from src.rc import resources
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -54,11 +54,46 @@ class Ui_MainWindow(object):
         self.action_find_and_replace.setObjectName(u"action_find_and_replace")
         self.action_print = QAction(MainWindow)
         self.action_print.setObjectName(u"action_print")
+        self.action_paste_link = QAction(MainWindow)
+        self.action_paste_link.setObjectName(u"action_paste_link")
+        self.action_bold = QAction(MainWindow)
+        self.action_bold.setObjectName(u"action_bold")
+        self.action_bold.setCheckable(True)
+        self.action_italic = QAction(MainWindow)
+        self.action_italic.setObjectName(u"action_italic")
+        self.action_italic.setCheckable(True)
+        self.action_underline = QAction(MainWindow)
+        self.action_underline.setObjectName(u"action_underline")
+        self.action_underline.setCheckable(True)
+        self.action_left = QAction(MainWindow)
+        self.action_left.setObjectName(u"action_left")
+        self.action_left.setCheckable(True)
+        self.action_center = QAction(MainWindow)
+        self.action_center.setObjectName(u"action_center")
+        self.action_center.setCheckable(True)
+        self.action_right = QAction(MainWindow)
+        self.action_right.setObjectName(u"action_right")
+        self.action_right.setCheckable(True)
+        self.action_justify = QAction(MainWindow)
+        self.action_justify.setObjectName(u"action_justify")
+        self.action_justify.setCheckable(True)
+        self.action_indent = QAction(MainWindow)
+        self.action_indent.setObjectName(u"action_indent")
+        self.action_unindent = QAction(MainWindow)
+        self.action_unindent.setObjectName(u"action_unindent")
+        self.action_redo = QAction(MainWindow)
+        self.action_redo.setObjectName(u"action_redo")
+        self.action_undo = QAction(MainWindow)
+        self.action_undo.setObjectName(u"action_undo")
         self.central_widget = QWidget(MainWindow)
         self.central_widget.setObjectName(u"central_widget")
         self.central_widget.setStyleSheet(u"QToolTip {\n"
 "	background-color: rgb(234, 234, 234);\n"
 "	color: rgb(84, 84, 84);\n"
+"}\n"
+"\n"
+"QTextEdit {\n"
+"	background-color: white;\n"
 "}\n"
 "\n"
 "\n"
@@ -103,6 +138,7 @@ class Ui_MainWindow(object):
         self.frame_tools = QFrame(self.central_widget)
         self.frame_tools.setObjectName(u"frame_tools")
         self.frame_tools.setMinimumSize(QSize(0, 30))
+        self.frame_tools.setMaximumSize(QSize(16777215, 30))
         self.frame_tools.setStyleSheet(u"#frame_tools {\n"
 "	background-color: rgb(244, 244, 244);\n"
 "}")
@@ -160,10 +196,52 @@ class Ui_MainWindow(object):
 
         self.horizontalLayout_3.addWidget(self.combo_box_fonts)
 
-        self.spin_box_size = QSpinBox(self.frame_tools)
-        self.spin_box_size.setObjectName(u"spin_box_size")
+        self.combo_box_styles = QComboBox(self.frame_tools)
+        self.combo_box_styles.setObjectName(u"combo_box_styles")
         font1 = QFont()
         font1.setPointSize(12)
+        self.combo_box_styles.setFont(font1)
+        self.combo_box_styles.setStyleSheet(u"QComboBox {\n"
+"	color: rgb(84, 84, 84);\n"
+"	background-color: rgb(244, 244, 244);\n"
+"	border-radius: 5px;	\n"
+"	padding-left: 2px;\n"
+"	border: 1px solid rgb(234, 234, 234);\n"
+"}\n"
+"\n"
+"QComboBox::hover {\n"
+"	background-color: rgb(234, 234, 234);\n"
+"}\n"
+"\n"
+"QComboBox::drop-down {\n"
+"    subcontrol-position: top right;\n"
+"    width: 20px;\n"
+"    border-top-right-radius: 5px;\n"
+"    border-bottom-right-radius: 5px;\n"
+"}\n"
+"\n"
+"QComboBox::down-arrow {\n"
+"	subcontrol-position: margin;\n"
+"	subcontrol-origin: border;\n"
+"	border-image: url(:/icons/icons/arrows.png);\n"
+"	height: 12px;\n"
+"	width: 12px;\n"
+"	border-radius: 4px;\n"
+"	margin-top: 2px;\n"
+"}\n"
+"\n"
+"QComboBox QAbstractItemView {\n"
+"	selection-background-color: rgb(70, 140, 255);\n"
+"	selection-color: white;\n"
+"	background-color: rgb(244, 244, 244);\n"
+"	color: rgb(84, 84, 84);\n"
+"}\n"
+"")
+
+        self.horizontalLayout_3.addWidget(self.combo_box_styles)
+
+        self.spin_box_size = QSpinBox(self.frame_tools)
+        self.spin_box_size.setObjectName(u"spin_box_size")
         self.spin_box_size.setFont(font1)
         self.spin_box_size.setStyleSheet(u"QSpinBox {\n"
 "	color: rgb(84, 84, 84);\n"
@@ -208,6 +286,7 @@ class Ui_MainWindow(object):
 "\n"
 "")
         self.spin_box_size.setAlignment(Qt.AlignLeading|Qt.AlignLeft|Qt.AlignVCenter)
+        self.spin_box_size.setMinimum(1)
         self.spin_box_size.setMaximum(288)
 
         self.horizontalLayout_3.addWidget(self.spin_box_size)
@@ -361,6 +440,7 @@ class Ui_MainWindow(object):
         self.frame_find_and_replace = QFrame(self.central_widget)
         self.frame_find_and_replace.setObjectName(u"frame_find_and_replace")
         self.frame_find_and_replace.setMinimumSize(QSize(0, 0))
+        self.frame_find_and_replace.setMaximumSize(QSize(16777215, 60))
         self.frame_find_and_replace.setStyleSheet(u"QFrame#frame_find_and_replace {\n"
 "	background-color: white;\n"
 "	border-bottom: 1px solid rgb(224, 224, 224);\n"
@@ -407,6 +487,7 @@ class Ui_MainWindow(object):
         self.horizontalLayout_8.setContentsMargins(0, 0, 0, 0)
         self.frame = QFrame(self.frame_find)
         self.frame.setObjectName(u"frame")
+        self.frame.setMinimumSize(QSize(0, 16))
         self.frame.setFrameShape(QFrame.StyledPanel)
         self.frame.setFrameShadow(QFrame.Raised)
         self.horizontalLayout_5 = QHBoxLayout(self.frame)
@@ -613,8 +694,8 @@ class Ui_MainWindow(object):
         self.menu_edit.setObjectName(u"menu_edit")
         self.menu_find = QMenu(self.menu_edit)
         self.menu_find.setObjectName(u"menu_find")
-        self.menu_veiw = QMenu(self.menubar)
-        self.menu_veiw.setObjectName(u"menu_veiw")
+        self.menu_format = QMenu(self.menubar)
+        self.menu_format.setObjectName(u"menu_format")
         self.menu_settings = QMenu(self.menubar)
         self.menu_settings.setObjectName(u"menu_settings")
         self.menu_window = QMenu(self.menubar)
@@ -625,7 +706,7 @@ class Ui_MainWindow(object):
 
         self.menubar.addAction(self.menu_file.menuAction())
         self.menubar.addAction(self.menu_edit.menuAction())
-        self.menubar.addAction(self.menu_veiw.menuAction())
+        self.menubar.addAction(self.menu_format.menuAction())
         self.menubar.addAction(self.menu_settings.menuAction())
         self.menubar.addAction(self.menu_window.menuAction())
         self.menubar.addAction(self.menu_help.menuAction())
@@ -644,8 +725,24 @@ class Ui_MainWindow(object):
         self.menu_edit.addAction(self.action_delete)
         self.menu_edit.addSeparator()
         self.menu_edit.addAction(self.menu_find.menuAction())
+        self.menu_edit.addSeparator()
+        self.menu_edit.addAction(self.action_paste_link)
+        self.menu_edit.addSeparator()
+        self.menu_edit.addAction(self.action_redo)
+        self.menu_edit.addAction(self.action_undo)
         self.menu_find.addAction(self.action_find)
         self.menu_find.addAction(self.action_find_and_replace)
+        self.menu_format.addAction(self.action_bold)
+        self.menu_format.addAction(self.action_italic)
+        self.menu_format.addAction(self.action_underline)
+        self.menu_format.addSeparator()
+        self.menu_format.addAction(self.action_left)
+        self.menu_format.addAction(self.action_center)
+        self.menu_format.addAction(self.action_right)
+        self.menu_format.addAction(self.action_justify)
+        self.menu_format.addSeparator()
+        self.menu_format.addAction(self.action_indent)
+        self.menu_format.addAction(self.action_unindent)
 
         self.retranslateUi(MainWindow)
         self.check_replace.toggled.connect(self.frame_replace.setVisible)
@@ -668,8 +765,23 @@ class Ui_MainWindow(object):
         self.action_find.setText(QCoreApplication.translate("MainWindow", u"Find", None))
         self.action_find_and_replace.setText(QCoreApplication.translate("MainWindow", u"Find and Replace", None))
         self.action_print.setText(QCoreApplication.translate("MainWindow", u"Print", None))
+        self.action_paste_link.setText(QCoreApplication.translate("MainWindow", u"Paste link...", None))
+        self.action_bold.setText(QCoreApplication.translate("MainWindow", u"Bold", None))
+        self.action_italic.setText(QCoreApplication.translate("MainWindow", u"Italic", None))
+        self.action_underline.setText(QCoreApplication.translate("MainWindow", u"Underline", None))
+        self.action_left.setText(QCoreApplication.translate("MainWindow", u"Left", None))
+        self.action_center.setText(QCoreApplication.translate("MainWindow", u"Center", None))
+        self.action_right.setText(QCoreApplication.translate("MainWindow", u"Right", None))
+        self.action_justify.setText(QCoreApplication.translate("MainWindow", u"Justify", None))
+        self.action_indent.setText(QCoreApplication.translate("MainWindow", u"Indent", None))
+        self.action_unindent.setText(QCoreApplication.translate("MainWindow", u"Unindent", None))
+        self.action_redo.setText(QCoreApplication.translate("MainWindow", u"Redo", None))
+        self.action_undo.setText(QCoreApplication.translate("MainWindow", u"Undo", None))
 #if QT_CONFIG(tooltip)
         self.combo_box_fonts.setToolTip(QCoreApplication.translate("MainWindow", u"Font", None))
+#endif // QT_CONFIG(tooltip)
+#if QT_CONFIG(tooltip)
+        self.combo_box_styles.setToolTip(QCoreApplication.translate("MainWindow", u"Styles", None))
 #endif // QT_CONFIG(tooltip)
 #if QT_CONFIG(tooltip)
         self.spin_box_size.setToolTip(QCoreApplication.translate("MainWindow", u"Text Size", None))
@@ -724,7 +836,7 @@ class Ui_MainWindow(object):
         self.menuRecent.setTitle(QCoreApplication.translate("MainWindow", u"Recent", None))
         self.menu_edit.setTitle(QCoreApplication.translate("MainWindow", u"Edit", None))
         self.menu_find.setTitle(QCoreApplication.translate("MainWindow", u"Find", None))
-        self.menu_veiw.setTitle(QCoreApplication.translate("MainWindow", u"View", None))
+        self.menu_format.setTitle(QCoreApplication.translate("MainWindow", u"Format", None))
         self.menu_settings.setTitle(QCoreApplication.translate("MainWindow", u"Settings", None))
         self.menu_window.setTitle(QCoreApplication.translate("MainWindow", u"Window", None))
         self.menu_help.setTitle(QCoreApplication.translate("MainWindow", u"Help", None))

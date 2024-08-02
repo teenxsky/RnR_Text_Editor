@@ -18,7 +18,7 @@ from PySide6.QtGui import (QBrush, QColor, QConicalGradient, QCursor,
 from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QDialog,
     QDoubleSpinBox, QFrame, QGridLayout, QHBoxLayout,
     QLabel, QPushButton, QRadioButton, QSizePolicy,
-    QSpacerItem, QVBoxLayout, QWidget)
+    QSpacerItem, QSpinBox, QVBoxLayout, QWidget)
 
 class Ui_DialogSpacing(object):
     def setupUi(self, DialogSpacing):
@@ -80,15 +80,16 @@ class Ui_DialogSpacing(object):
 
         self.horizontalLayout.addItem(self.horizontalSpacer)
 
-        self.spin_mul = QDoubleSpinBox(self.frame_mul)
-        self.spin_mul.setObjectName(u"spin_mul")
-        self.spin_mul.setMinimumSize(QSize(60, 20))
-        self.spin_mul.setMaximumSize(QSize(60, 25))
+        self.spin_prop_height = QSpinBox(self.frame_mul)
+        self.spin_prop_height.setObjectName(u"spin_prop_height")
+        self.spin_prop_height.setMinimumSize(QSize(60, 20))
+        self.spin_prop_height.setMaximumSize(QSize(60, 25))
         font1 = QFont()
         font1.setPointSize(11)
-        self.spin_mul.setFont(font1)
+        self.spin_prop_height.setFont(font1)
+        self.spin_prop_height.setMaximum(1000)
 
-        self.horizontalLayout.addWidget(self.spin_mul)
+        self.horizontalLayout.addWidget(self.spin_prop_height)
 
         self.label = QLabel(self.frame_mul)
         self.label.setObjectName(u"label")
@@ -141,16 +142,16 @@ class Ui_DialogSpacing(object):
         self.verticalLayout.setSpacing(0)
         self.verticalLayout.setObjectName(u"verticalLayout")
         self.verticalLayout.setContentsMargins(0, 0, 0, 0)
-        self.radio_equal = QRadioButton(self.frame_line_height_radio_buttons)
+        self.radio_fixed = QRadioButton(self.frame_line_height_radio_buttons)
         self.group_line_height = QButtonGroup(DialogSpacing)
         self.group_line_height.setObjectName(u"group_line_height")
-        self.group_line_height.addButton(self.radio_equal)
-        self.radio_equal.setObjectName(u"radio_equal")
-        self.radio_equal.setMinimumSize(QSize(80, 20))
-        self.radio_equal.setMaximumSize(QSize(80, 20))
-        self.radio_equal.setFont(font1)
+        self.group_line_height.addButton(self.radio_fixed)
+        self.radio_fixed.setObjectName(u"radio_fixed")
+        self.radio_fixed.setMinimumSize(QSize(80, 20))
+        self.radio_fixed.setMaximumSize(QSize(80, 20))
+        self.radio_fixed.setFont(font1)
 
-        self.verticalLayout.addWidget(self.radio_equal)
+        self.verticalLayout.addWidget(self.radio_fixed)
 
         self.radio_min = QRadioButton(self.frame_line_height_radio_buttons)
         self.group_line_height.addButton(self.radio_min)
@@ -173,6 +174,8 @@ class Ui_DialogSpacing(object):
         self.spin_line_height_1.setMinimumSize(QSize(60, 20))
         self.spin_line_height_1.setMaximumSize(QSize(60, 25))
         self.spin_line_height_1.setFont(font1)
+        self.spin_line_height_1.setMinimum(-99.000000000000000)
+        self.spin_line_height_1.setMaximum(10000.000000000000000)
 
         self.horizontalLayout_2.addWidget(self.spin_line_height_1)
 
@@ -215,6 +218,8 @@ class Ui_DialogSpacing(object):
         self.spin_line_height_2.setMinimumSize(QSize(60, 20))
         self.spin_line_height_2.setMaximumSize(QSize(60, 25))
         self.spin_line_height_2.setFont(font1)
+        self.spin_line_height_2.setMinimum(-99.000000000000000)
+        self.spin_line_height_2.setMaximum(10000.000000000000000)
 
         self.horizontalLayout_3.addWidget(self.spin_line_height_2)
 
@@ -253,13 +258,15 @@ class Ui_DialogSpacing(object):
 
         self.horizontalLayout_4.addItem(self.horizontalSpacer_4)
 
-        self.spin_line_spacing = QDoubleSpinBox(self.frame_4)
-        self.spin_line_spacing.setObjectName(u"spin_line_spacing")
-        self.spin_line_spacing.setMinimumSize(QSize(60, 20))
-        self.spin_line_spacing.setMaximumSize(QSize(60, 25))
-        self.spin_line_spacing.setFont(font1)
+        self.spin_line_distance = QDoubleSpinBox(self.frame_4)
+        self.spin_line_distance.setObjectName(u"spin_line_distance")
+        self.spin_line_distance.setMinimumSize(QSize(60, 20))
+        self.spin_line_distance.setMaximumSize(QSize(60, 25))
+        self.spin_line_distance.setFont(font1)
+        self.spin_line_distance.setMinimum(-99.000000000000000)
+        self.spin_line_distance.setMaximum(10000.000000000000000)
 
-        self.horizontalLayout_4.addWidget(self.spin_line_spacing)
+        self.horizontalLayout_4.addWidget(self.spin_line_distance)
 
         self.label_6 = QLabel(self.frame_4)
         self.label_6.setObjectName(u"label_6")
@@ -281,16 +288,56 @@ class Ui_DialogSpacing(object):
         self.frame_7.setFrameShape(QFrame.StyledPanel)
         self.frame_7.setFrameShadow(QFrame.Raised)
         self.gridLayout_2 = QGridLayout(self.frame_7)
-        self.gridLayout_2.setSpacing(5)
+        self.gridLayout_2.setSpacing(0)
         self.gridLayout_2.setObjectName(u"gridLayout_2")
         self.gridLayout_2.setContentsMargins(0, 0, 0, 0)
         self.label_12 = QLabel(self.frame_7)
         self.label_12.setObjectName(u"label_12")
         self.label_12.setMinimumSize(QSize(0, 20))
-        self.label_12.setMaximumSize(QSize(16777215, 20))
+        self.label_12.setMaximumSize(QSize(16777215, 16777215))
         self.label_12.setFont(font1)
+        self.label_12.setWordWrap(True)
 
         self.gridLayout_2.addWidget(self.label_12, 0, 0, 2, 1)
+
+        self.frame_9 = QFrame(self.frame_7)
+        self.frame_9.setObjectName(u"frame_9")
+        self.frame_9.setMinimumSize(QSize(0, 20))
+        self.frame_9.setMaximumSize(QSize(16777215, 25))
+        self.frame_9.setFrameShape(QFrame.StyledPanel)
+        self.frame_9.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_8 = QHBoxLayout(self.frame_9)
+        self.horizontalLayout_8.setSpacing(5)
+        self.horizontalLayout_8.setObjectName(u"horizontalLayout_8")
+        self.horizontalLayout_8.setContentsMargins(0, 0, 0, 0)
+        self.label_13 = QLabel(self.frame_9)
+        self.label_13.setObjectName(u"label_13")
+        self.label_13.setMinimumSize(QSize(0, 20))
+        self.label_13.setMaximumSize(QSize(16777215, 20))
+        self.label_13.setFont(font1)
+        self.label_13.setAlignment(Qt.AlignCenter)
+
+        self.horizontalLayout_8.addWidget(self.label_13)
+
+        self.spin_par_spacing_left = QDoubleSpinBox(self.frame_9)
+        self.spin_par_spacing_left.setObjectName(u"spin_par_spacing_left")
+        self.spin_par_spacing_left.setMinimumSize(QSize(60, 20))
+        self.spin_par_spacing_left.setMaximumSize(QSize(60, 25))
+        self.spin_par_spacing_left.setFont(font1)
+        self.spin_par_spacing_left.setMaximum(10000.000000000000000)
+
+        self.horizontalLayout_8.addWidget(self.spin_par_spacing_left)
+
+        self.label_14 = QLabel(self.frame_9)
+        self.label_14.setObjectName(u"label_14")
+        self.label_14.setMinimumSize(QSize(35, 20))
+        self.label_14.setMaximumSize(QSize(35, 20))
+        self.label_14.setFont(font1)
+
+        self.horizontalLayout_8.addWidget(self.label_14)
+
+
+        self.gridLayout_2.addWidget(self.frame_9, 0, 1, 1, 1)
 
         self.frame_5 = QFrame(self.frame_7)
         self.frame_5.setObjectName(u"frame_5")
@@ -311,13 +358,14 @@ class Ui_DialogSpacing(object):
 
         self.horizontalLayout_5.addWidget(self.label_9)
 
-        self.spin_par_spacing_up = QDoubleSpinBox(self.frame_5)
-        self.spin_par_spacing_up.setObjectName(u"spin_par_spacing_up")
-        self.spin_par_spacing_up.setMinimumSize(QSize(60, 20))
-        self.spin_par_spacing_up.setMaximumSize(QSize(60, 25))
-        self.spin_par_spacing_up.setFont(font1)
+        self.spin_par_spacing_top = QDoubleSpinBox(self.frame_5)
+        self.spin_par_spacing_top.setObjectName(u"spin_par_spacing_top")
+        self.spin_par_spacing_top.setMinimumSize(QSize(60, 20))
+        self.spin_par_spacing_top.setMaximumSize(QSize(60, 25))
+        self.spin_par_spacing_top.setFont(font1)
+        self.spin_par_spacing_top.setMaximum(10000.000000000000000)
 
-        self.horizontalLayout_5.addWidget(self.spin_par_spacing_up)
+        self.horizontalLayout_5.addWidget(self.spin_par_spacing_top)
 
         self.label_8 = QLabel(self.frame_5)
         self.label_8.setObjectName(u"label_8")
@@ -328,7 +376,45 @@ class Ui_DialogSpacing(object):
         self.horizontalLayout_5.addWidget(self.label_8)
 
 
-        self.gridLayout_2.addWidget(self.frame_5, 0, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.frame_5, 0, 2, 1, 1)
+
+        self.frame_10 = QFrame(self.frame_7)
+        self.frame_10.setObjectName(u"frame_10")
+        self.frame_10.setMaximumSize(QSize(16777215, 25))
+        self.frame_10.setFrameShape(QFrame.StyledPanel)
+        self.frame_10.setFrameShadow(QFrame.Raised)
+        self.horizontalLayout_9 = QHBoxLayout(self.frame_10)
+        self.horizontalLayout_9.setSpacing(5)
+        self.horizontalLayout_9.setObjectName(u"horizontalLayout_9")
+        self.horizontalLayout_9.setContentsMargins(0, 0, 0, 0)
+        self.label_15 = QLabel(self.frame_10)
+        self.label_15.setObjectName(u"label_15")
+        self.label_15.setMinimumSize(QSize(0, 20))
+        self.label_15.setMaximumSize(QSize(16777215, 20))
+        self.label_15.setFont(font1)
+        self.label_15.setAlignment(Qt.AlignCenter)
+
+        self.horizontalLayout_9.addWidget(self.label_15)
+
+        self.spin_par_spacing_right = QDoubleSpinBox(self.frame_10)
+        self.spin_par_spacing_right.setObjectName(u"spin_par_spacing_right")
+        self.spin_par_spacing_right.setMinimumSize(QSize(60, 20))
+        self.spin_par_spacing_right.setMaximumSize(QSize(60, 25))
+        self.spin_par_spacing_right.setFont(font1)
+        self.spin_par_spacing_right.setMaximum(10000.000000000000000)
+
+        self.horizontalLayout_9.addWidget(self.spin_par_spacing_right)
+
+        self.label_16 = QLabel(self.frame_10)
+        self.label_16.setObjectName(u"label_16")
+        self.label_16.setMinimumSize(QSize(35, 20))
+        self.label_16.setMaximumSize(QSize(35, 20))
+        self.label_16.setFont(font1)
+
+        self.horizontalLayout_9.addWidget(self.label_16)
+
+
+        self.gridLayout_2.addWidget(self.frame_10, 1, 1, 1, 1)
 
         self.frame_6 = QFrame(self.frame_7)
         self.frame_6.setObjectName(u"frame_6")
@@ -348,13 +434,14 @@ class Ui_DialogSpacing(object):
 
         self.horizontalLayout_6.addWidget(self.label_10)
 
-        self.spin_par_spacing_down = QDoubleSpinBox(self.frame_6)
-        self.spin_par_spacing_down.setObjectName(u"spin_par_spacing_down")
-        self.spin_par_spacing_down.setMinimumSize(QSize(60, 20))
-        self.spin_par_spacing_down.setMaximumSize(QSize(60, 25))
-        self.spin_par_spacing_down.setFont(font1)
+        self.spin_par_spacing_bottom = QDoubleSpinBox(self.frame_6)
+        self.spin_par_spacing_bottom.setObjectName(u"spin_par_spacing_bottom")
+        self.spin_par_spacing_bottom.setMinimumSize(QSize(60, 20))
+        self.spin_par_spacing_bottom.setMaximumSize(QSize(60, 25))
+        self.spin_par_spacing_bottom.setFont(font1)
+        self.spin_par_spacing_bottom.setMaximum(10000.000000000000000)
 
-        self.horizontalLayout_6.addWidget(self.spin_par_spacing_down)
+        self.horizontalLayout_6.addWidget(self.spin_par_spacing_bottom)
 
         self.label_11 = QLabel(self.frame_6)
         self.label_11.setObjectName(u"label_11")
@@ -365,7 +452,7 @@ class Ui_DialogSpacing(object):
         self.horizontalLayout_6.addWidget(self.label_11)
 
 
-        self.gridLayout_2.addWidget(self.frame_6, 1, 1, 1, 1)
+        self.gridLayout_2.addWidget(self.frame_6, 1, 2, 1, 1)
 
 
         self.verticalLayout_2.addWidget(self.frame_7)
@@ -405,7 +492,7 @@ class Ui_DialogSpacing(object):
 
 
         self.retranslateUi(DialogSpacing)
-        self.radio_equal.toggled.connect(self.check_max.setDisabled)
+        self.radio_fixed.toggled.connect(self.check_max.setDisabled)
         self.check_max.toggled.connect(self.spin_line_height_2.setEnabled)
 
         QMetaObject.connectSlotsByName(DialogSpacing)
@@ -413,21 +500,52 @@ class Ui_DialogSpacing(object):
 
     def retranslateUi(self, DialogSpacing):
         DialogSpacing.setWindowTitle(QCoreApplication.translate("DialogSpacing", u"Dialog", None))
-        self.label_2.setText(QCoreApplication.translate("DialogSpacing", u"Multiplicity of row heights", None))
-        self.label.setText(QCoreApplication.translate("DialogSpacing", u"times", None))
+#if QT_CONFIG(tooltip)
+        self.label_2.setToolTip(QCoreApplication.translate("DialogSpacing", u"This sets the spacing proportional to the line (in percentage). For example, set to 200 for double spacing.", None))
+#endif // QT_CONFIG(tooltip)
+        self.label_2.setText(QCoreApplication.translate("DialogSpacing", u"Proportional Height", None))
+        self.label.setText(QCoreApplication.translate("DialogSpacing", u"%", None))
         self.label_5.setText(QCoreApplication.translate("DialogSpacing", u"Line height", None))
-        self.radio_equal.setText(QCoreApplication.translate("DialogSpacing", u"Equal", None))
+#if QT_CONFIG(tooltip)
+        self.radio_fixed.setToolTip(QCoreApplication.translate("DialogSpacing", u"This sets the line height to a fixed line height (in pixels)", None))
+#endif // QT_CONFIG(tooltip)
+        self.radio_fixed.setText(QCoreApplication.translate("DialogSpacing", u"Fixed", None))
+#if QT_CONFIG(tooltip)
+        self.radio_min.setToolTip(QCoreApplication.translate("DialogSpacing", u"This sets the minimum line height (in pixels)", None))
+#endif // QT_CONFIG(tooltip)
         self.radio_min.setText(QCoreApplication.translate("DialogSpacing", u"Minimum", None))
-        self.label_3.setText(QCoreApplication.translate("DialogSpacing", u"pt", None))
+        self.label_3.setText(QCoreApplication.translate("DialogSpacing", u"pixels", None))
         self.check_max.setText(QCoreApplication.translate("DialogSpacing", u"Maximum", None))
-        self.label_4.setText(QCoreApplication.translate("DialogSpacing", u"pt", None))
-        self.label_7.setText(QCoreApplication.translate("DialogSpacing", u"Line spacing", None))
-        self.label_6.setText(QCoreApplication.translate("DialogSpacing", u"pt", None))
+        self.label_4.setText(QCoreApplication.translate("DialogSpacing", u"pixels", None))
+#if QT_CONFIG(tooltip)
+        self.label_7.setToolTip(QCoreApplication.translate("DialogSpacing", u"This adds the specified height between lines (in pixels)", None))
+#endif // QT_CONFIG(tooltip)
+        self.label_7.setText(QCoreApplication.translate("DialogSpacing", u"Line Distance Height", None))
+        self.label_6.setText(QCoreApplication.translate("DialogSpacing", u"pixels", None))
+#if QT_CONFIG(tooltip)
+        self.label_12.setToolTip(QCoreApplication.translate("DialogSpacing", u"Sets the paragraph's alignment", None))
+#endif // QT_CONFIG(tooltip)
         self.label_12.setText(QCoreApplication.translate("DialogSpacing", u"Paragraph spacing", None))
-        self.label_9.setText(QCoreApplication.translate("DialogSpacing", u"up", None))
-        self.label_8.setText(QCoreApplication.translate("DialogSpacing", u"pt", None))
-        self.label_10.setText(QCoreApplication.translate("DialogSpacing", u"down", None))
-        self.label_11.setText(QCoreApplication.translate("DialogSpacing", u"pt", None))
+#if QT_CONFIG(tooltip)
+        self.label_13.setToolTip(QCoreApplication.translate("DialogSpacing", u"Sets the paragraph's left margin", None))
+#endif // QT_CONFIG(tooltip)
+        self.label_13.setText(QCoreApplication.translate("DialogSpacing", u"left", None))
+        self.label_14.setText(QCoreApplication.translate("DialogSpacing", u"pixels", None))
+#if QT_CONFIG(tooltip)
+        self.label_9.setToolTip(QCoreApplication.translate("DialogSpacing", u"Sets the paragraph's top margin", None))
+#endif // QT_CONFIG(tooltip)
+        self.label_9.setText(QCoreApplication.translate("DialogSpacing", u"top", None))
+        self.label_8.setText(QCoreApplication.translate("DialogSpacing", u"pixels", None))
+#if QT_CONFIG(tooltip)
+        self.label_15.setToolTip(QCoreApplication.translate("DialogSpacing", u"Sets the paragraph's right margin", None))
+#endif // QT_CONFIG(tooltip)
+        self.label_15.setText(QCoreApplication.translate("DialogSpacing", u"right", None))
+        self.label_16.setText(QCoreApplication.translate("DialogSpacing", u"pixels", None))
+#if QT_CONFIG(tooltip)
+        self.label_10.setToolTip(QCoreApplication.translate("DialogSpacing", u"Sets the paragraph's bottom margin", None))
+#endif // QT_CONFIG(tooltip)
+        self.label_10.setText(QCoreApplication.translate("DialogSpacing", u"bottom", None))
+        self.label_11.setText(QCoreApplication.translate("DialogSpacing", u"pixels", None))
         self.button_cancel.setText(QCoreApplication.translate("DialogSpacing", u"Cancel", None))
         self.button_ok.setText(QCoreApplication.translate("DialogSpacing", u"OK", None))
     # retranslateUi

@@ -2,11 +2,12 @@ import os
 import sys
 import uuid
 
-from PySide6.QtCore import QSize, QEvent, QCoreApplication, QPoint, Signal, QRegularExpression, QDir, QSizeF
+from PySide6.QtCore import QSize, QEvent, QCoreApplication, QPoint, Signal, QRegularExpression, QDir, QSizeF, Slot
 from PySide6.QtGui import QIcon, Qt, QColor, QFont, QKeySequence, QAction, QFontDatabase, QImage, QTextDocument, \
-    QTextCharFormat, QBrush, QTextCursor, QTextFrameFormat, QPainter, QPen
+    QTextCharFormat, QBrush, QTextCursor, QTextFrameFormat, QPainter, QPen, QPalette
 from PySide6.QtWidgets import QMainWindow, QApplication, QColorDialog, QTextEdit, QMessageBox, QDialog, QWidget, \
     QFrame
+from PySide6.QtPrintSupport import QAbstractPrintDialog, QPrinter, QPrintDialog, QPrintPreviewDialog
 
 from design import Ui_MainWindow, Ui_DialogSpacing, Ui_Dialog
 from service_files import FileManager, get_info, add_recent_file, remove_recent_file
@@ -35,9 +36,9 @@ class TextEdit(QTextEdit):
     
         self.textChanged.connect(self.set_pages_size)
 
-        self._frame_setup()
+        self.frame_setup()
     
-    def _frame_setup(self):
+    def frame_setup(self):
         frame_format = QTextFrameFormat()
         frame_format.setTopMargin(self.page_top_margin + 60)
         frame_format.setLeftMargin(self.page_side_margin + 40)
@@ -45,22 +46,43 @@ class TextEdit(QTextEdit):
         frame_format.setBottomMargin(self.page_bottom_margin + 60)
 
         self.document().rootFrame().setFrameFormat(frame_format)
+    
+    def print_setup(self, activate: bool):
+        if activate:
+            self.setVisible(False)
+            frame_format = QTextFrameFormat()
+            frame_format.setTopMargin(self.page_top_margin + 60)
+            frame_format.setBottomMargin(self.page_bottom_margin + 60)
+            self.document().rootFrame().setFrameFormat(frame_format)
+            
+        else:
+            self.setVisible(True)
+            self.frame_setup()
 
     def set_pages_size(self): 
         self.document().setPageSize(QSizeF(self.page_width, self.page_height))
         self.setFixedHeight(self.document().pageCount() * self.page_height)
     
+    def remove_selected_text(self):
+        self.textCursor().removeSelectedText()
+    
     def setHtml(self, html: str):
         self.document().setHtml(html)
-        self._frame_setup()
+        self.frame_setup()
+
+        self.document().setModified(False)
     
     def setMarkdown(self, markdown: str):
         self.document().setMarkdown(markdown)
-        self._frame_setup()
+        self.frame_setup()
+
+        self.document().setModified(False)
 
     def setPlainText(self, text: str):
         self.document().setPlainText(text)
-        self._frame_setup()
+        self.frame_setup()
+
+        self.document().setModified(False)
     
     def paintEvent(self, event): 
         rect_painter = QPainter(self.viewport()) 
@@ -133,7 +155,6 @@ class RenameWidget(Ui_Dialog, QDialog):
 
 
 class SpacingDialog(Ui_DialogSpacing, QDialog):
-
     cancel_clicked = Signal()
     ok_clicked = Signal()
 
@@ -364,6 +385,12 @@ class TextEditor(Ui_MainWindow, QMainWindow):
             self.text_edit
         ]
 
+        if sys.platform == 'darwin':
+            pal = self.text_edit.palette()
+            pal.setColor(QPalette.Base, QColor(Qt.white))
+            pal.setColor(QPalette.Text, QColor(Qt.black))
+            self.text_edit.setPalette(pal)
+
         self._set_icons_svg()
         self._init_setup()
 
@@ -454,11 +481,17 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self.ui.action_paste.setShortcutContext(Qt.ShortcutContext.WindowShortcut)
         self.ui.action_paste.setShortcut(QKeySequence("Ctrl+V"))
 
-        # self.ui.action_print.triggered.connect(self.text_edit.paste)
+        self.ui.action_print.triggered.connect(self.print_file_event)
         self.ui.action_print.setShortcutContext(Qt.ShortcutContext.WindowShortcut)
         self.ui.action_print.setShortcut(QKeySequence("Ctrl+P"))
 
-        self.ui.action_delete.triggered.connect(self.delete_event)
+        self.action_print_preview = QAction(self)
+        self.ui.menu_file.addAction(self.action_print_preview)
+        self.action_print_preview.setObjectName(u"action_print_preview")
+        self.action_print_preview.triggered.connect(self.print_prewiev_event)
+        self.action_print_preview.setText(QCoreApplication.translate("MainWindow", u"Print Preview", None))
+
+        self.ui.action_delete.triggered.connect(self.text_edit.remove_selected_text)
 
         self.ui.button_spacing.clicked.connect(self.show_spacing_dialog)
 
@@ -489,18 +522,22 @@ class TextEditor(Ui_MainWindow, QMainWindow):
 
         self.ui.widget_color_picker.setStyleSheet(
             "QWidget#widget_color_picker{background-color: rgb(244, 244, 244);}")
-
-        self.update_format()
+        
         self._update_title()
+        self.update_format()
         self.update_recent_files()
 
+        self.text_edit.document().setModified(False)
+
     def _scroll_to_cursor(self):
-        if self.text_edit.cursorRect().y() > self.height() - self.ui.frame_tools.height() + self.ui.scrollArea.verticalScrollBar().value() - 15:
-            new_value = self.ui.scrollArea.verticalScrollBar().value() + int((self.height() - self.ui.frame_tools.height()) / 2)
+        new_value = self.text_edit.cursorRect().y() - (int((self.height() - self.ui.frame_tools.height()) / 2 + 50))
+        if new_value < 0:
+            new_value = 0
+
+        if self.text_edit.cursorRect().y() > self.height() - self.ui.frame_tools.height() + self.ui.scrollArea.verticalScrollBar().value() - 40:
             self.ui.scrollArea.verticalScrollBar().setValue(new_value)
 
         elif self.text_edit.cursorRect().y() < self.ui.scrollArea.verticalScrollBar().value():
-            new_value = self.ui.scrollArea.verticalScrollBar().value() - int((self.height() - self.ui.frame_tools.height()) / 2)
             self.ui.scrollArea.verticalScrollBar().setValue(new_value)
 
     def eventFilter(self, watched, event):
@@ -525,10 +562,19 @@ class TextEditor(Ui_MainWindow, QMainWindow):
                                         self.size().height() // 2 - self.spacing_dialog.size().height() // 2))
         super(TextEditor, self).resizeEvent(event)
 
+    def closeEvent(self, event):
+        if self.text_edit.document().isModified():
+            if self._save_file_message() == QMessageBox.StandardButton.Cancel:
+                event.ignore()
+            else:
+                event.accept()
+        else:
+            event.accept()
+    
     def add_to_recent_files(self, path: str):
         add_recent_file(path)
         self.update_recent_files()
-
+    
     @staticmethod
     def remove_recent_files(remove_file_path=""):
         if not remove_file_path:
@@ -582,20 +628,16 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         
         self.text_edit.set_pages_size()
 
-    def delete_event(self):
-        cursor = self.text_edit.textCursor()
-        cursor.removeSelectedText()
-
     def new_file_event(self):
-        if self.text_edit.toPlainText():
+        if self.text_edit.document().isModified():
             if self._save_file_message() == QMessageBox.StandardButton.Cancel:
                 return
 
-        self._default_settings()
+        self._default_text_edit_settings()
         self._update_title()
 
     def open_file_event(self, recent_file_path=""):
-        if self.text_edit.toPlainText():
+        if self.text_edit.document().isModified():
             if self._save_file_message() == QMessageBox.StandardButton.Cancel:
                 return
 
@@ -663,24 +705,34 @@ class TextEditor(Ui_MainWindow, QMainWindow):
                         self.update_recent_files()
 
             self._update_title()
+    
+    @Slot()
+    def print_file_event(self):
+        self.text_edit.print_setup(True)
 
-    def _update_title(self):
-        self.setWindowTitle("%s - R&R Text Editor" % (QDir(self.file_manager.file_path).dirName()
-                                                      if self.file_manager.file_path else "Untitled"))
+        printer = QPrinter(QPrinter.HighResolution)
+        print_dialog = QPrintDialog(printer, self)
+        print_dialog.setWindowTitle("Print Document")
 
-    def _default_settings(self):
-        self.file_manager.file_path = None
-        self.text_edit.clear()
+        if self.text_edit.textCursor().hasSelection():
+            print_dialog.setOption(QAbstractPrintDialog.PrintSelection)
 
-        self.ui.spin_box_size.setValue(12)
-        self.text_edit.setFontPointSize(12)
-        self.text_edit.setFontItalic(False)
-        self.text_edit.setFontUnderline(False)
-        self.text_edit.setTextColor(QColor("black"))
-        self.text_edit.setFontWeight(QFont.Weight.Normal)
-        self.ui.combo_box_fonts.setCurrentFont("Times New Roman")
-        self.text_edit.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        self.set_current_color(QColor('black'))
+        if print_dialog.exec() == QDialog.Accepted:
+            self.text_edit.print_(printer)     
+
+        self.text_edit.print_setup(False)   
+
+    @Slot() 
+    def print_prewiev_event(self):
+        self.text_edit.print_setup(True)
+
+        printer = QPrinter(QPrinter.HighResolution)
+        print_preview_dialog = QPrintPreviewDialog(printer, self)
+        print_preview_dialog.paintRequested.connect(self.text_edit.print_)
+
+        print_preview_dialog.exec()
+
+        self.text_edit.print_setup(False)
 
     @staticmethod
     def block_signals(objects, b):
@@ -688,18 +740,24 @@ class TextEditor(Ui_MainWindow, QMainWindow):
             o.blockSignals(b)
 
     def show_spacing_dialog(self):
-
         for obj in self.objects_to_block:
             obj.setDisabled(True)
 
         self.spacing_dialog.exec()
 
     def close_spacing_dialog(self):
-
         for obj in self.objects_to_block:
             obj.setEnabled(True)
 
         self.spacing_dialog.hide()
+
+    def color_picker(self):
+        color = QColorDialog.getColor()
+        self.set_current_color(color)
+        self.text_edit.setTextColor(color)
+
+    def set_current_color(self, color: QColor):
+        self.ui.widget_color.setStyleSheet(f"background-color: {color.name(QColor.NameFormat.HexRgb)};")
 
     def update_format(self):
         signals = [
@@ -728,23 +786,30 @@ class TextEditor(Ui_MainWindow, QMainWindow):
 
         self.block_signals(signals, False)
 
-    def color_picker(self):
-        color = QColorDialog.getColor()
-        self.set_current_color(color)
-        self.text_edit.setTextColor(color)
+    def _update_title(self):
+        self.setWindowTitle("%s - R&R Text Editor" % (QDir(self.file_manager.file_path).dirName()
+                                                      if self.file_manager.file_path else "Untitled"))
 
-    def set_current_color(self, color: QColor):
-        self.ui.widget_color.setStyleSheet(f"background-color: {color.name(QColor.NameFormat.HexRgb)};")
+    def _default_text_edit_settings(self):
+        self.file_manager.file_path = None
+        self.file_manager.name_filter = None
+        self.text_edit.setPlainText("")
 
-    def closeEvent(self, event):
-        if not self.text_edit.toPlainText():
-            event.accept()
-        
-        if self._save_file_message() == QMessageBox.StandardButton.Cancel:
-            event.ignore()
-        else:
-            event.accept()
-    
+        self.ui.spin_box_size.setValue(12)
+        self.text_edit.setFontItalic(False)
+        self.text_edit.setFontUnderline(False)
+        self.text_edit.setTextColor(QColor("black"))
+        self.text_edit.setFontWeight(QFont.Weight.Normal)
+        self.ui.combo_box_fonts.setCurrentFont("Times New Roman")
+        self.text_edit.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.set_current_color(QColor('black'))
+
+        font = QFont("Times New Roman", 12)
+        self.text_edit.setFont(font)
+        self.text_edit.setFontPointSize(12)
+
+        self.text_edit.document().setModified(False)
+
     def _save_file_message(self):
         reply = QMessageBox(self)
         reply.setText('Save Document')

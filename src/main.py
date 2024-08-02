@@ -37,6 +37,12 @@ from PySide6.QtGui import (
     QTextListFormat,
     QTextFormat,
 )
+from PySide6.QtPrintSupport import (
+    QPrinter,
+    QPrintPreviewDialog,
+    QAbstractPrintDialog,
+    QPrintDialog,
+)
 from PySide6.QtWidgets import (
     QMainWindow,
     QApplication,
@@ -94,9 +100,9 @@ class TextEdit(QTextEdit):
 
         self.textChanged.connect(self.set_pages_size)
 
-        self._frame_setup()
+        self.frame_setup()
 
-    def _frame_setup(self):
+    def frame_setup(self):
         frame_format = QTextFrameFormat()
         frame_format.setTopMargin(self.page_top_margin + 60)
         frame_format.setLeftMargin(self.page_side_margin + 40)
@@ -105,21 +111,36 @@ class TextEdit(QTextEdit):
 
         self.document().rootFrame().setFrameFormat(frame_format)
 
+    def print_setup(self, activate: bool):
+        if activate:
+            self.setVisible(False)
+            frame_format = QTextFrameFormat()
+            frame_format.setTopMargin(self.page_top_margin + 60)
+            frame_format.setBottomMargin(self.page_bottom_margin + 60)
+            self.document().rootFrame().setFrameFormat(frame_format)
+
+        else:
+            self.setVisible(True)
+            self.frame_setup()
+
     def set_pages_size(self):
         self.document().setPageSize(QSizeF(self.page_width, self.page_height))
         self.setFixedHeight(self.document().pageCount() * self.page_height)
 
     def setHtml(self, html: str):
         self.document().setHtml(html)
-        self._frame_setup()
+        self.frame_setup()
+        self.document().setModified(False)
 
     def setMarkdown(self, markdown: str):
         self.document().setMarkdown(markdown)
-        self._frame_setup()
+        self.frame_setup()
+        self.document().setModified(False)
 
     def setPlainText(self, text: str):
         self.document().setPlainText(text)
-        self._frame_setup()
+        self.frame_setup()
+        self.document().setModified(False)
 
     def paintEvent(self, event):
         rect_painter = QPainter(self.viewport())
@@ -592,6 +613,18 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self.ui.button_italic.toggled.connect(self.set_italic)
         self.ui.button_underline.toggled.connect(self.set_underline)
 
+        self.ui.action_print.triggered.connect(self.print_file_event)
+        self.ui.action_print.setShortcutContext(Qt.ShortcutContext.WindowShortcut)
+        self.ui.action_print.setShortcut(QKeySequence("Ctrl+P"))
+
+        self.action_print_preview = QAction(self)
+        self.ui.menu_file.addAction(self.action_print_preview)
+        self.action_print_preview.setObjectName("action_print_preview")
+        self.action_print_preview.triggered.connect(self.print_prewiev_event)
+        self.action_print_preview.setText(
+            QCoreApplication.translate("MainWindow", "Print Preview", None)
+        )
+
         self.spacing_dialog.ui.spin_line_distance.valueChanged.connect(
             self.set_line_distance
         )
@@ -788,8 +821,8 @@ class TextEditor(Ui_MainWindow, QMainWindow):
             self.text_edit.setPalette(pal)
 
         self.text_edit.setFocus()
-        self.update_format()
         self._update_title()
+        self.update_format()
         self.update_recent_files()
 
     def eventFilter(self, watched, event):
@@ -828,26 +861,46 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         super(TextEditor, self).resizeEvent(event)
 
     def _scroll_to_cursor(self):
+        new_value = self.text_edit.cursorRect().y() - (
+            int((self.height() - self.ui.frame_tools.height()) / 2 + 50)
+        )
+        if new_value < 0:
+            new_value = 0
+
         if (
             self.text_edit.cursorRect().y()
             > self.height()
             - self.ui.frame_tools.height()
             + self.ui.scrollArea.verticalScrollBar().value()
-            - 15
+            - 40
         ):
-            new_value = self.ui.scrollArea.verticalScrollBar().value() + int(
-                (self.height() - self.ui.frame_tools.height()) / 2
-            )
             self.ui.scrollArea.verticalScrollBar().setValue(new_value)
 
         elif (
             self.text_edit.cursorRect().y()
             < self.ui.scrollArea.verticalScrollBar().value()
         ):
-            new_value = self.ui.scrollArea.verticalScrollBar().value() - int(
-                (self.height() - self.ui.frame_tools.height()) / 2
-            )
             self.ui.scrollArea.verticalScrollBar().setValue(new_value)
+
+    def _default_text_edit_settings(self):
+        self.file_manager.file_path = None
+        self.file_manager.name_filter = None
+        self.text_edit.setPlainText("")
+
+        self.ui.spin_box_size.setValue(12)
+        self.text_edit.setFontItalic(False)
+        self.text_edit.setFontUnderline(False)
+        self.text_edit.setTextColor(QColor("black"))
+        self.text_edit.setFontWeight(QFont.Weight.Normal)
+        self.ui.combo_box_fonts.setCurrentFont("Times New Roman")
+        self.text_edit.setAlignment(Qt.AlignmentFlag.AlignLeft)
+        self.set_current_color(QColor('black'))
+
+        font = QFont("Times New Roman", 12)
+        self.text_edit.setFont(font)
+        self.text_edit.setFontPointSize(12)
+
+        self.text_edit.document().setModified(False)
 
     def add_to_recent_files(self, path: str):
         add_recent_file(path)
@@ -917,15 +970,15 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         return
 
     def new_file_event(self):
-        if self.text_edit.toPlainText():
+        if self.text_edit.document().isModified():
             if self._save_file_message() == QMessageBox.StandardButton.Cancel:
                 return
 
-        self._default_settings()
+        self._default_text_edit_settings()
         self._update_title()
 
     def open_file_event(self, recent_file_path=""):
-        if self.text_edit.toPlainText():
+        if self.text_edit.document().isModified():
             if self._save_file_message() == QMessageBox.StandardButton.Cancel:
                 return
 
@@ -948,7 +1001,7 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self._update_title()
 
     def open_recent_file_event(self):
-        recent_files = get_info()["recent_files"]
+        recent_files = get_info()["RECENT_FILES"]
         for file in recent_files:
             if file.endswith(self.sender().text()):
                 self.open_file_event(recent_file_path=file)
@@ -957,6 +1010,34 @@ class TextEditor(Ui_MainWindow, QMainWindow):
     def save_file_event(self):
         self.file_manager.save_file()
         self._update_title()
+
+    def print_file_event(self):
+        self.text_edit.print_setup(True)
+
+        printer = QPrinter(QPrinter.PrinterMode.HighResolution)
+        print_dialog = QPrintDialog(printer, self)
+        print_dialog.setWindowTitle("Print Document")
+
+        if self.text_edit.textCursor().hasSelection():
+            print_dialog.setOption(
+                QAbstractPrintDialog.PrintDialogOption.PrintSelection
+            )
+
+        if print_dialog.exec() == QDialog.DialogCode.Accepted:
+            self.text_edit.print_(printer)
+
+        self.text_edit.print_setup(False)
+
+    def print_prewiev_event(self):
+        self.text_edit.print_setup(True)
+
+        printer = QPrinter(QPrinter.PrinterMode.HighResolution)
+        print_preview_dialog = QPrintPreviewDialog(printer, self)
+        print_preview_dialog.paintRequested.connect(self.text_edit.print_)
+
+        print_preview_dialog.exec()
+
+        self.text_edit.print_setup(False)
 
     def text_align_event(self):
         action_name = self.sender().objectName()
@@ -1439,11 +1520,11 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self.ui.action_paste.setEnabled(md and md.hasText())
 
     def closeEvent(self, event):
-        if not self.text_edit.toPlainText():
-            event.accept()
-
-        if self._save_file_message() == QMessageBox.StandardButton.Cancel:
-            event.ignore()
+        if self.text_edit.document().isModified():
+            if self._save_file_message() == QMessageBox.StandardButton.Cancel:
+                event.ignore()
+            else:
+                event.accept()
         else:
             event.accept()
 

@@ -32,6 +32,10 @@
 	color: rgb(84, 84, 84);
 }
 
+QTextEdit {
+	background-color: white;
+}
+
 
 QFrame {
 	border: 0;
@@ -89,6 +93,12 @@ QWidget#widget_color {
       <property name="minimumSize">
        <size>
         <width>0</width>
+        <height>30</height>
+       </size>
+      </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
         <height>30</height>
        </size>
       </property>
@@ -179,6 +189,56 @@ QComboBox QAbstractItemView {
         </widget>
        </item>
        <item>
+        <widget class="QComboBox" name="combo_box_styles">
+         <property name="font">
+          <font>
+           <pointsize>12</pointsize>
+          </font>
+         </property>
+         <property name="toolTip">
+          <string>Styles</string>
+         </property>
+         <property name="styleSheet">
+          <string notr="true">QComboBox {
+	color: rgb(84, 84, 84);
+	background-color: rgb(244, 244, 244);
+	border-radius: 5px;	
+	padding-left: 2px;
+	border: 1px solid rgb(234, 234, 234);
+}
+
+QComboBox::hover {
+	background-color: rgb(234, 234, 234);
+}
+
+QComboBox::drop-down {
+    subcontrol-position: top right;
+    width: 20px;
+    border-top-right-radius: 5px;
+    border-bottom-right-radius: 5px;
+}
+
+QComboBox::down-arrow {
+	subcontrol-position: margin;
+	subcontrol-origin: border;
+	border-image: url(:/icons/icons/arrows.png);
+	height: 12px;
+	width: 12px;
+	border-radius: 4px;
+	margin-top: 2px;
+}
+
+QComboBox QAbstractItemView {
+	selection-background-color: rgb(70, 140, 255);
+	selection-color: white;
+	background-color: rgb(244, 244, 244);
+	color: rgb(84, 84, 84);
+}
+</string>
+         </property>
+        </widget>
+       </item>
+       <item>
         <widget class="QSpinBox" name="spin_box_size">
          <property name="font">
           <font>
@@ -234,6 +294,9 @@ QSpinBox::up-button::pressed, QSpinBox::down-button::pressed  {
          </property>
          <property name="alignment">
           <set>Qt::AlignLeading|Qt::AlignLeft|Qt::AlignVCenter</set>
+         </property>
+         <property name="minimum">
+          <number>1</number>
          </property>
          <property name="maximum">
           <number>288</number>
@@ -654,6 +717,12 @@ QSpinBox::up-button::pressed, QSpinBox::down-button::pressed  {
         <height>0</height>
        </size>
       </property>
+      <property name="maximumSize">
+       <size>
+        <width>16777215</width>
+        <height>60</height>
+       </size>
+      </property>
       <property name="styleSheet">
        <string notr="true">QFrame#frame_find_and_replace {
 	background-color: white;
@@ -746,6 +815,12 @@ QLineEdit#line_find {
           </property>
           <item>
            <widget class="QFrame" name="frame">
+            <property name="minimumSize">
+             <size>
+              <width>0</width>
+              <height>16</height>
+             </size>
+            </property>
             <property name="frameShape">
              <enum>QFrame::StyledPanel</enum>
             </property>
@@ -1301,11 +1376,27 @@ QPushButton#button_replace {
     <addaction name="action_delete"/>
     <addaction name="separator"/>
     <addaction name="menu_find"/>
+    <addaction name="separator"/>
+    <addaction name="action_paste_link"/>
+    <addaction name="separator"/>
+    <addaction name="action_redo"/>
+    <addaction name="action_undo"/>
    </widget>
-   <widget class="QMenu" name="menu_veiw">
+   <widget class="QMenu" name="menu_format">
     <property name="title">
-     <string>View</string>
+     <string>Format</string>
     </property>
+    <addaction name="action_bold"/>
+    <addaction name="action_italic"/>
+    <addaction name="action_underline"/>
+    <addaction name="separator"/>
+    <addaction name="action_left"/>
+    <addaction name="action_center"/>
+    <addaction name="action_right"/>
+    <addaction name="action_justify"/>
+    <addaction name="separator"/>
+    <addaction name="action_indent"/>
+    <addaction name="action_unindent"/>
    </widget>
    <widget class="QMenu" name="menu_settings">
     <property name="title">
@@ -1324,7 +1415,7 @@ QPushButton#button_replace {
    </widget>
    <addaction name="menu_file"/>
    <addaction name="menu_edit"/>
-   <addaction name="menu_veiw"/>
+   <addaction name="menu_format"/>
    <addaction name="menu_settings"/>
    <addaction name="menu_window"/>
    <addaction name="menu_help"/>
@@ -1389,6 +1480,87 @@ QPushButton#button_replace {
     <string>Print</string>
    </property>
   </action>
+  <action name="action_paste_link">
+   <property name="text">
+    <string>Paste link...</string>
+   </property>
+  </action>
+  <action name="action_bold">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Bold</string>
+   </property>
+  </action>
+  <action name="action_italic">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Italic</string>
+   </property>
+  </action>
+  <action name="action_underline">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Underline</string>
+   </property>
+  </action>
+  <action name="action_left">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Left</string>
+   </property>
+  </action>
+  <action name="action_center">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Center</string>
+   </property>
+  </action>
+  <action name="action_right">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Right</string>
+   </property>
+  </action>
+  <action name="action_justify">
+   <property name="checkable">
+    <bool>true</bool>
+   </property>
+   <property name="text">
+    <string>Justify</string>
+   </property>
+  </action>
+  <action name="action_indent">
+   <property name="text">
+    <string>Indent</string>
+   </property>
+  </action>
+  <action name="action_unindent">
+   <property name="text">
+    <string>Unindent</string>
+   </property>
+  </action>
+  <action name="action_redo">
+   <property name="text">
+    <string>Redo</string>
+   </property>
+  </action>
+  <action name="action_undo">
+   <property name="text">
+    <string>Undo</string>
+   </property>
+  </action>
  </widget>
  <resources>
   <include location="../rc/resources.qrc"/>
@@ -1421,8 +1593,8 @@ QPushButton#button_replace {
      <y>76</y>
     </hint>
     <hint type="destinationlabel">
-     <x>677</x>
-     <y>76</y>
+     <x>634</x>
+     <y>80</y>
     </hint>
    </hints>
   </connection>

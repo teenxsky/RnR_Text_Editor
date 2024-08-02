@@ -3,7 +3,7 @@ import json
 
 
 this_folder = os.path.dirname(os.path.abspath(__file__))
-config_path = os.path.join(this_folder, 'info.json')
+config_path = os.path.join(this_folder, "info.json")
 
 
 def get_info() -> dict:
@@ -19,7 +19,7 @@ def get_info() -> dict:
 def add_recent_file(path: str) -> None:
     info = get_info()
     recent_files = info["RECENT_FILES"]
-    
+
     if recent_files.count(path) == 1:
         recent_files.remove(path)
     recent_files = [path] + recent_files
@@ -32,6 +32,7 @@ def add_recent_file(path: str) -> None:
 
     with open(config_path, "w") as file:
         file.write(config_info)
+
 
 def remove_recent_file(path: str) -> None:
     info = get_info()

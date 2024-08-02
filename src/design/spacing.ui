@@ -124,8 +124,11 @@ QPushButton::pressed {
           <bold>false</bold>
          </font>
         </property>
+        <property name="toolTip">
+         <string>This sets the spacing proportional to the line (in percentage). For example, set to 200 for double spacing.</string>
+        </property>
         <property name="text">
-         <string>Multiplicity of row heights</string>
+         <string>Proportional Height</string>
         </property>
        </widget>
       </item>
@@ -155,7 +158,7 @@ QPushButton::pressed {
        </spacer>
       </item>
       <item>
-       <widget class="QDoubleSpinBox" name="spin_mul">
+       <widget class="QSpinBox" name="spin_prop_height">
         <property name="minimumSize">
          <size>
           <width>60</width>
@@ -172,6 +175,9 @@ QPushButton::pressed {
          <font>
           <pointsize>11</pointsize>
          </font>
+        </property>
+        <property name="maximum">
+         <number>1000</number>
         </property>
        </widget>
       </item>
@@ -195,7 +201,7 @@ QPushButton::pressed {
          </font>
         </property>
         <property name="text">
-         <string>times</string>
+         <string>%</string>
         </property>
        </widget>
       </item>
@@ -341,7 +347,7 @@ QPushButton::pressed {
              <number>0</number>
             </property>
             <item>
-             <widget class="QRadioButton" name="radio_equal">
+             <widget class="QRadioButton" name="radio_fixed">
               <property name="minimumSize">
                <size>
                 <width>80</width>
@@ -359,8 +365,11 @@ QPushButton::pressed {
                 <pointsize>11</pointsize>
                </font>
               </property>
+              <property name="toolTip">
+               <string>This sets the line height to a fixed line height (in pixels)</string>
+              </property>
               <property name="text">
-               <string>Equal</string>
+               <string>Fixed</string>
               </property>
               <attribute name="buttonGroup">
                <string notr="true">group_line_height</string>
@@ -385,6 +394,9 @@ QPushButton::pressed {
                <font>
                 <pointsize>11</pointsize>
                </font>
+              </property>
+              <property name="toolTip">
+               <string>This sets the minimum line height (in pixels)</string>
               </property>
               <property name="text">
                <string>Minimum</string>
@@ -429,6 +441,12 @@ QPushButton::pressed {
              <pointsize>11</pointsize>
             </font>
            </property>
+           <property name="minimum">
+            <double>-99.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>10000.000000000000000</double>
+           </property>
           </widget>
          </item>
          <item>
@@ -451,7 +469,7 @@ QPushButton::pressed {
             </font>
            </property>
            <property name="text">
-            <string>pt</string>
+            <string>pixels</string>
            </property>
           </widget>
          </item>
@@ -555,6 +573,12 @@ QPushButton::pressed {
              <pointsize>11</pointsize>
             </font>
            </property>
+           <property name="minimum">
+            <double>-99.000000000000000</double>
+           </property>
+           <property name="maximum">
+            <double>10000.000000000000000</double>
+           </property>
           </widget>
          </item>
          <item>
@@ -577,7 +601,7 @@ QPushButton::pressed {
             </font>
            </property>
            <property name="text">
-            <string>pt</string>
+            <string>pixels</string>
            </property>
           </widget>
          </item>
@@ -636,8 +660,11 @@ QPushButton::pressed {
           <pointsize>11</pointsize>
          </font>
         </property>
+        <property name="toolTip">
+         <string>This adds the specified height between lines (in pixels)</string>
+        </property>
         <property name="text">
-         <string>Line spacing</string>
+         <string>Line Distance Height</string>
         </property>
        </widget>
       </item>
@@ -655,7 +682,7 @@ QPushButton::pressed {
        </spacer>
       </item>
       <item>
-       <widget class="QDoubleSpinBox" name="spin_line_spacing">
+       <widget class="QDoubleSpinBox" name="spin_line_distance">
         <property name="minimumSize">
          <size>
           <width>60</width>
@@ -672,6 +699,12 @@ QPushButton::pressed {
          <font>
           <pointsize>11</pointsize>
          </font>
+        </property>
+        <property name="minimum">
+         <double>-99.000000000000000</double>
+        </property>
+        <property name="maximum">
+         <double>10000.000000000000000</double>
         </property>
        </widget>
       </item>
@@ -695,7 +728,7 @@ QPushButton::pressed {
          </font>
         </property>
         <property name="text">
-         <string>pt</string>
+         <string>pixels</string>
         </property>
        </widget>
       </item>
@@ -735,7 +768,7 @@ QPushButton::pressed {
        <number>0</number>
       </property>
       <property name="spacing">
-       <number>5</number>
+       <number>0</number>
       </property>
       <item row="0" column="0" rowspan="2">
        <widget class="QLabel" name="label_12">
@@ -748,7 +781,7 @@ QPushButton::pressed {
         <property name="maximumSize">
          <size>
           <width>16777215</width>
-          <height>20</height>
+          <height>16777215</height>
          </size>
         </property>
         <property name="font">
@@ -756,12 +789,135 @@ QPushButton::pressed {
           <pointsize>11</pointsize>
          </font>
         </property>
+        <property name="toolTip">
+         <string>Sets the paragraph's alignment</string>
+        </property>
         <property name="text">
          <string>Paragraph spacing</string>
+        </property>
+        <property name="wordWrap">
+         <bool>true</bool>
         </property>
        </widget>
       </item>
       <item row="0" column="1">
+       <widget class="QFrame" name="frame_9">
+        <property name="minimumSize">
+         <size>
+          <width>0</width>
+          <height>20</height>
+         </size>
+        </property>
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_8">
+         <property name="spacing">
+          <number>5</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_13">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
+           <property name="toolTip">
+            <string>Sets the paragraph's left margin</string>
+           </property>
+           <property name="text">
+            <string>left</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="spin_par_spacing_left">
+           <property name="minimumSize">
+            <size>
+             <width>60</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>60</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
+           <property name="maximum">
+            <double>10000.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_14">
+           <property name="minimumSize">
+            <size>
+             <width>35</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>35</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>pixels</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="0" column="2">
        <widget class="QFrame" name="frame_5">
         <property name="minimumSize">
          <size>
@@ -816,8 +972,11 @@ QPushButton::pressed {
              <pointsize>11</pointsize>
             </font>
            </property>
+           <property name="toolTip">
+            <string>Sets the paragraph's top margin</string>
+           </property>
            <property name="text">
-            <string>up</string>
+            <string>top</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -825,7 +984,7 @@ QPushButton::pressed {
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="spin_par_spacing_up">
+          <widget class="QDoubleSpinBox" name="spin_par_spacing_top">
            <property name="minimumSize">
             <size>
              <width>60</width>
@@ -842,6 +1001,9 @@ QPushButton::pressed {
             <font>
              <pointsize>11</pointsize>
             </font>
+           </property>
+           <property name="maximum">
+            <double>10000.000000000000000</double>
            </property>
           </widget>
          </item>
@@ -865,7 +1027,7 @@ QPushButton::pressed {
             </font>
            </property>
            <property name="text">
-            <string>pt</string>
+            <string>pixels</string>
            </property>
           </widget>
          </item>
@@ -873,6 +1035,117 @@ QPushButton::pressed {
        </widget>
       </item>
       <item row="1" column="1">
+       <widget class="QFrame" name="frame_10">
+        <property name="maximumSize">
+         <size>
+          <width>16777215</width>
+          <height>25</height>
+         </size>
+        </property>
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+        <layout class="QHBoxLayout" name="horizontalLayout_9">
+         <property name="spacing">
+          <number>5</number>
+         </property>
+         <property name="leftMargin">
+          <number>0</number>
+         </property>
+         <property name="topMargin">
+          <number>0</number>
+         </property>
+         <property name="rightMargin">
+          <number>0</number>
+         </property>
+         <property name="bottomMargin">
+          <number>0</number>
+         </property>
+         <item>
+          <widget class="QLabel" name="label_15">
+           <property name="minimumSize">
+            <size>
+             <width>0</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>16777215</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
+           <property name="toolTip">
+            <string>Sets the paragraph's right margin</string>
+           </property>
+           <property name="text">
+            <string>right</string>
+           </property>
+           <property name="alignment">
+            <set>Qt::AlignCenter</set>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QDoubleSpinBox" name="spin_par_spacing_right">
+           <property name="minimumSize">
+            <size>
+             <width>60</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>60</width>
+             <height>25</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
+           <property name="maximum">
+            <double>10000.000000000000000</double>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <widget class="QLabel" name="label_16">
+           <property name="minimumSize">
+            <size>
+             <width>35</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="maximumSize">
+            <size>
+             <width>35</width>
+             <height>20</height>
+            </size>
+           </property>
+           <property name="font">
+            <font>
+             <pointsize>11</pointsize>
+            </font>
+           </property>
+           <property name="text">
+            <string>pixels</string>
+           </property>
+          </widget>
+         </item>
+        </layout>
+       </widget>
+      </item>
+      <item row="1" column="2">
        <widget class="QFrame" name="frame_6">
         <property name="maximumSize">
          <size>
@@ -921,8 +1194,11 @@ QPushButton::pressed {
              <pointsize>11</pointsize>
             </font>
            </property>
+           <property name="toolTip">
+            <string>Sets the paragraph's bottom margin</string>
+           </property>
            <property name="text">
-            <string>down</string>
+            <string>bottom</string>
            </property>
            <property name="alignment">
             <set>Qt::AlignCenter</set>
@@ -930,7 +1206,7 @@ QPushButton::pressed {
           </widget>
          </item>
          <item>
-          <widget class="QDoubleSpinBox" name="spin_par_spacing_down">
+          <widget class="QDoubleSpinBox" name="spin_par_spacing_bottom">
            <property name="minimumSize">
             <size>
              <width>60</width>
@@ -947,6 +1223,9 @@ QPushButton::pressed {
             <font>
              <pointsize>11</pointsize>
             </font>
+           </property>
+           <property name="maximum">
+            <double>10000.000000000000000</double>
            </property>
           </widget>
          </item>
@@ -970,7 +1249,7 @@ QPushButton::pressed {
             </font>
            </property>
            <property name="text">
-            <string>pt</string>
+            <string>pixels</string>
            </property>
           </widget>
          </item>
@@ -1085,7 +1364,7 @@ QPushButton::pressed {
  <resources/>
  <connections>
   <connection>
-   <sender>radio_equal</sender>
+   <sender>radio_fixed</sender>
    <signal>toggled(bool)</signal>
    <receiver>check_max</receiver>
    <slot>setDisabled(bool)</slot>

@@ -82,7 +82,7 @@ R&R Text Editor - это текстовый процессор, предназн
 | GitHub | [github.com][SRCg] |
 | PySide6 | [qt.io][SRCt] |
 | ConvertAPI | [convertapi.com][SRCc] |
-| GZip| [docs.python.org/3/library/gzip.html][SRCt]|
+| GZip| [docs.python.org/3/library/gzip.html][SRCz]|
 
 ## РАЗРАБОТЧИКИ
 [Куторгин Руслан Алексеевич Б9123-01.03.02СП](https://github.com/teenxsky)
@@ -93,7 +93,7 @@ R&R Text Editor - это текстовый процессор, предназн
 [SRCg]: <https://github.com/> 
 [SRCp]: <https://www.python.org/>
 [SRCc]: <https://www.convertapi.com>
-[SRCt]: <https://docs.python.org/3/library/gzip.html>
+[SRCz]: <https://docs.python.org/3/library/gzip.html>
 
 ---
 

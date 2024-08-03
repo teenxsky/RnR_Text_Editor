@@ -5,7 +5,7 @@ R&R Text Editor - это текстовый процессор, предназн
 
 > Основная идея — быстрая и понятная работа с тектовыми документами. Благодаря удобному и интуитивно понятному интерфейсу, R&R Text Editor является доступным инструментом даже для новичков.
 
-![RRTextEditorIcon.png](https://s.iimg.su/s/03/P6KUGFXkLQStBWzGLlR6K8bzDHupfF09MjK0ytfN.png)
+![RRTextEditorIcon (1).png](https://s.iimg.su/s/03/9AODCjrVWrjy8WTrYjWyCEQAUOFCBOifi3M72pBg.png)
 
 ![Снимок экрана 2024-08-02 в 23.16.51.png](https://s.iimg.su/s/02/KKH0rdgb8TEP2kkLsVBo3rAwYkCyLrerviX1OUfU.png)
 

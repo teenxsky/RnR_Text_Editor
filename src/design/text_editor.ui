@@ -1396,6 +1396,9 @@ QPushButton#button_replace {
     <addaction name="separator"/>
     <addaction name="action_indent"/>
     <addaction name="action_unindent"/>
+    <addaction name="separator"/>
+    <addaction name="action_add_style"/>
+    <addaction name="action_delete_style"/>
    </widget>
    <widget class="QMenu" name="menu_settings">
     <property name="title">
@@ -1558,6 +1561,16 @@ QPushButton#button_replace {
   <action name="action_undo">
    <property name="text">
     <string>Undo</string>
+   </property>
+  </action>
+  <action name="action_add_style">
+   <property name="text">
+    <string>Add style</string>
+   </property>
+  </action>
+  <action name="action_delete_style">
+   <property name="text">
+    <string>Delete style</string>
    </property>
   </action>
  </widget>

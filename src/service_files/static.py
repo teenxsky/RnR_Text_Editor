@@ -44,3 +44,33 @@ def remove_recent_file(path: str) -> None:
     config_info = json.dumps(info)
     with open(config_path, "w") as file:
         file.write(config_info)
+
+
+def add_user_style(style_name: str, style: dict) -> None:
+    info = get_info()
+    user_styles = info["USER_STYLES"]
+
+    if user_styles == {}:
+        user_styles = dict()
+        user_styles["New Style 1"] = style
+
+    else:
+        user_styles[style_name] = style
+
+    info["USER_STYLES"] = user_styles
+    config_info = json.dumps(info)
+
+    with open(config_path, "w") as file:
+        file.write(config_info)
+
+
+def remove_user_style(style_name: str) -> None:
+    info = get_info()
+    user_styles = info["USER_STYLES"]
+
+    user_styles.pop(style_name)
+    info["USER_STYLES"] = user_styles
+
+    config_info = json.dumps(info)
+    with open(config_path, "w") as file:
+        file.write(config_info)

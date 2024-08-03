@@ -31,6 +31,7 @@ from PySide6.QtGui import (
     QTextBlockFormat,
     QPen,
     QPainter,
+    QPixmap,
     QTextFrameFormat,
     QPalette,
     QGuiApplication,
@@ -55,7 +56,7 @@ from PySide6.QtWidgets import (
 )
 
 from design import Ui_MainWindow, Ui_DialogSpacing, Ui_Dialog, Ui_DialogPasteLink
-from service_files import FileManager, get_info, add_recent_file, remove_recent_file
+from service_files import FileManager, get_info, add_recent_file, remove_recent_file, add_user_style, remove_user_style
 
 from rc import resources
 
@@ -80,6 +81,8 @@ STYLES = [
     "Heading 5",
     "Heading 6",
 ]
+
+CUSTOM_STYLES = {}
 
 
 class TextEdit(QTextEdit):
@@ -394,8 +397,8 @@ class FindAndReplaceWidget:
             old_occurrence_index = self.current_occurrence
 
             self._set_selection(
-                self.indexes_of_occurrences[old_occurrence_index][0], 
-                self.indexes_of_occurrences[old_occurrence_index][1]
+                self.indexes_of_occurrences[old_occurrence_index][0],
+                self.indexes_of_occurrences[old_occurrence_index][1],
             )
 
             self.cursor.insertText(self.ui.line_replace.text())
@@ -471,7 +474,7 @@ class FindAndReplaceWidget:
         self.text_edit.textCursor().mergeCharFormat(self.show_format)
 
         self._show_count_occurrences()
-    
+
     def _set_selection(self, begin: int, end: int):
         self.cursor.setPosition(begin, QTextCursor.MoveAnchor)
         self.cursor.setPosition(end, QTextCursor.KeepAnchor)
@@ -504,6 +507,13 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self.ui = Ui_MainWindow()
         self.ui.setupUi(self)
 
+        self.app_icon = QPixmap(os.path.join(os.path.dirname(os.path.abspath(__file__)), 
+                                'rc',
+                                'icons',
+                                'RRTextEditorIcon.png'))
+        
+        self.setWindowIcon(self.app_icon)
+
         self.text_edit = TextEdit(self.maximumSize())
         self.rename_widget = RenameWidget()
         self.file_manager = FileManager(self.text_edit)
@@ -511,10 +521,10 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self.spacing_dialog = SpacingDialog(self)
         self.find_and_replace_widget = FindAndReplaceWidget(self.ui, self.text_edit)
 
-        if sys.platform == 'darwin':
+        if sys.platform == "darwin":
             text_edit_palette = self.text_edit.palette()
-            text_edit_palette.setColor(QPalette.Base, QColor(Qt.white))
-            text_edit_palette.setColor(QPalette.Text, QColor(Qt.black))
+            text_edit_palette.setColor(QPalette.Base, QColor(Qt.GlobalColor.white))
+            text_edit_palette.setColor(QPalette.Text, QColor(Qt.GlobalColor.black))
             self.text_edit.setPalette(text_edit_palette)
 
         self.spacing_pref = {
@@ -594,8 +604,6 @@ class TextEditor(Ui_MainWindow, QMainWindow):
 
         self.text_edit.cursorPositionChanged.connect(self._scroll_to_cursor)
 
-        # self.text_edit.currentCharFormatChanged.connect(self.update_format)
-
         self.spacing_dialog.hide()
         self.spacing_dialog.cancel_clicked.connect(self.cancel_spacing_dialog)
         self.spacing_dialog.ok_clicked.connect(self.ok_spacing_dialog)
@@ -636,7 +644,7 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self.action_print_preview = QAction(self)
         self.ui.menu_file.addAction(self.action_print_preview)
         self.action_print_preview.setObjectName("action_print_preview")
-        self.action_print_preview.triggered.connect(self.print_prewiev_event)
+        self.action_print_preview.triggered.connect(self.print_preview_event)
         self.action_print_preview.setText(
             QCoreApplication.translate("MainWindow", "Print Preview", None)
         )
@@ -807,6 +815,16 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self.ui.action_justify.setPriority(QAction.Priority.LowPriority)
         self.ui.action_justify.setShortcut(QKeySequence("Ctrl+J"))
 
+        self.ui.action_add_style.triggered.connect(self.create_custom_style)
+        self.ui.action_add_style.setShortcutContext(Qt.ShortcutContext.WindowShortcut)
+        self.ui.action_add_style.setPriority(QAction.Priority.LowPriority)
+        self.ui.action_add_style.setShortcut(QKeySequence("Ctrl+Y"))
+
+        self.ui.action_delete_style.triggered.connect(self.delete_style)
+        self.ui.action_delete_style.setShortcutContext(Qt.ShortcutContext.WindowShortcut)
+        self.ui.action_delete_style.setPriority(QAction.Priority.LowPriority)
+        self.ui.action_delete_style.setEnabled(False)
+
         self.ui.button_spacing.clicked.connect(self.show_spacing_dialog)
 
         self.ui.action_rename.triggered.connect(self.rename_event)
@@ -840,6 +858,7 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self._update_title()
         self.update_format()
         self.update_recent_files()
+        self.load_custom_styles()
 
         self.text_edit.document().setModified(False)
 
@@ -912,7 +931,7 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         self.text_edit.setFontWeight(QFont.Weight.Normal)
         self.ui.combo_box_fonts.setCurrentFont("Times New Roman")
         self.text_edit.setAlignment(Qt.AlignmentFlag.AlignLeft)
-        self.set_current_color(QColor('black'))
+        self.set_current_color(QColor("black"))
 
         font = QFont("Times New Roman", 12)
         self.text_edit.setFont(font)
@@ -969,6 +988,7 @@ class TextEditor(Ui_MainWindow, QMainWindow):
             | QMessageBox.StandardButton.No
             | QMessageBox.StandardButton.Cancel
         )
+        reply.setIconPixmap(self.app_icon)
 
         result = reply.exec()
         if result == QMessageBox.StandardButton.Yes:
@@ -983,6 +1003,7 @@ class TextEditor(Ui_MainWindow, QMainWindow):
             "This file was not found or does not exist. Try again."
         )
         msg_box.setStandardButtons(QMessageBox.StandardButton.Ok)
+        msg_box.setIconPixmap(self.app_icon)
 
         msg_box.exec()
         return
@@ -1047,7 +1068,7 @@ class TextEditor(Ui_MainWindow, QMainWindow):
 
         self.text_edit.print_setup(False)
 
-    def print_prewiev_event(self):
+    def print_preview_event(self):
         self.text_edit.print_setup(True)
 
         printer = QPrinter(QPrinter.PrinterMode.HighResolution)
@@ -1121,14 +1142,15 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         point_size = float(p)
         fmt = QTextCharFormat()
         fmt.setFontPointSize(point_size)
-        self.ui.spin_box_size.setValue(p)
         self.text_edit.setFontPointSize(p)
-        self.merge_format_on_word_or_selection(fmt)
+        self.merge_format_on_word_or_selection(fmt)        
 
     def set_text_style(self, style_index):
         cursor = self.text_edit.textCursor()
         style = QTextListFormat.Style.ListStyleUndefined
         marker = QTextBlockFormat.MarkerType.NoMarker
+
+        self.ui.action_delete_style.setEnabled(False)
 
         if style_index == 1:
             style = QTextListFormat.Style.ListDisc
@@ -1158,6 +1180,10 @@ class TextEditor(Ui_MainWindow, QMainWindow):
             style = QTextListFormat.Style.ListLowerRoman
         elif style_index == 10:
             style = QTextListFormat.Style.ListUpperRoman
+        elif style_index > len(STYLES) - 1:
+            self.set_custom_style(f"New Style {style_index - len(STYLES) + 1}")
+            self.ui.action_delete_style.setEnabled(True)
+            return
 
         cursor.beginEditBlock()
 
@@ -1191,6 +1217,66 @@ class TextEditor(Ui_MainWindow, QMainWindow):
             list_fmt.setStyle(style)
             cursor.createList(list_fmt)
         cursor.endEditBlock()
+
+    def set_custom_style(self, key):
+        self.text_edit.setCurrentFont(CUSTOM_STYLES[key]["font"])
+        self.set_text_size(CUSTOM_STYLES[key]["size"])
+        self.text_edit.setFontWeight(QFont.Weight(CUSTOM_STYLES[key]["weight"]))
+        if CUSTOM_STYLES[key]["is_italic"]:
+            self.set_italic()
+        if CUSTOM_STYLES[key]["is_underline"]:
+            self.set_underline()
+        self.text_edit.setTextColor(CUSTOM_STYLES[key]["color"])
+        self.text_edit.setAlignment(Qt.AlignmentFlag(CUSTOM_STYLES[key]["alignment"]))
+
+    def create_custom_style(self):
+        font = self.ui.combo_box_fonts.currentFont().family()
+        size = self.ui.spin_box_size.value()
+        weight = (
+            QFont.Weight.Bold
+            if self.ui.action_bold.isChecked()
+            else QFont.Weight.Normal
+        )
+        is_italic = self.text_edit.fontItalic()
+        is_underline = self.text_edit.fontUnderline()
+        color = self.text_edit.textColor().value()
+        alignment = self.text_edit.alignment()
+
+        style_number = 1
+        keys = CUSTOM_STYLES.keys()
+        while True:
+            if f"New Style {style_number}" not in keys:
+                break
+            style_number += 1
+
+        CUSTOM_STYLES[f"New Style {style_number}"] = {
+            "font": font,
+            "size": size,
+            "weight": weight,
+            "is_italic": is_italic,
+            "is_underline": is_underline,
+            "color": color,
+            "alignment": alignment,
+        }
+
+        add_user_style(f"New Style {style_number}", CUSTOM_STYLES[f"New Style {style_number}"])
+        self.ui.combo_box_styles.addItem(f"New Style {style_number}")
+    
+    def load_custom_styles(self):
+        for key in get_info()["USER_STYLES"]:
+            CUSTOM_STYLES[key] = get_info()["USER_STYLES"][key]
+            self.ui.combo_box_styles.addItem(key)
+    
+    def delete_style(self):
+        index = self.ui.combo_box_styles.currentIndex()
+        key = self.ui.combo_box_styles.itemText(index)
+        if index > 16:
+            CUSTOM_STYLES.pop(key)
+            remove_user_style(key)
+            self.ui.combo_box_styles.removeItem(index)
+        
+        if self.ui.combo_box_styles.currentIndex() <= 16:
+            self.ui.action_delete_style.setEnabled(False)
 
     def indent(self):
         self.modify_indentation(1)
@@ -1403,6 +1489,7 @@ class TextEditor(Ui_MainWindow, QMainWindow):
             self.ui.button_bold,
             self.ui.button_italic,
             self.ui.button_underline,
+            self.ui.combo_box_styles,
         ]
 
         self.block_signals(signals, True)
@@ -1428,7 +1515,7 @@ class TextEditor(Ui_MainWindow, QMainWindow):
                 self.ui.combo_box_styles.setCurrentIndex(10)
             else:
                 self.ui.combo_box_styles.setCurrentIndex(-1)
-        else:
+        elif self.ui.combo_box_styles.currentIndex() < len(STYLES) - 1:
             heading_level = self.text_edit.textCursor().blockFormat().headingLevel()
             new_level = heading_level + 10 if heading_level != 0 else 0
             self.ui.combo_box_styles.setCurrentIndex(new_level)

@@ -1,5 +1,5 @@
 # R&R Text Editor
-![Static Badge](https://img.shields.io/badge/R%26R_Text_Editor-v1.0.1-blue?style=flat-square&labelColor=gray) ![Static Badge](https://img.shields.io/badge/For-MacOS-blue?style=flat-square&labelColor=white)
+![Static Badge](https://img.shields.io/badge/R%26R_Text_Editor-v1.0.2-blue?style=flat-square&labelColor=gray) ![Static Badge](https://img.shields.io/badge/For-MacOS-blue?style=flat-square&labelColor=white)
 
 R&R Text Editor - это текстовый процессор, предназначенный для создания, редактирования и форматирования документов, таких как письма, отчеты, статьи, книги и многих других документов, разработанный для MacOS.
 

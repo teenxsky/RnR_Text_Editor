@@ -190,6 +190,12 @@ QComboBox QAbstractItemView {
        </item>
        <item>
         <widget class="QComboBox" name="combo_box_styles">
+         <property name="minimumSize">
+          <size>
+           <width>200</width>
+           <height>0</height>
+          </size>
+         </property>
          <property name="font">
           <font>
            <pointsize>12</pointsize>
@@ -226,13 +232,6 @@ QComboBox::down-arrow {
 	width: 12px;
 	border-radius: 4px;
 	margin-top: 2px;
-}
-
-QComboBox QAbstractItemView {
-	selection-background-color: rgb(70, 140, 255);
-	selection-color: white;
-	background-color: rgb(244, 244, 244);
-	color: rgb(84, 84, 84);
 }
 </string>
          </property>

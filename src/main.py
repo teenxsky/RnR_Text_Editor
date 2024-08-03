@@ -393,6 +393,11 @@ class FindAndReplaceWidget:
             self._block_show_occurrence()
             old_occurrence_index = self.current_occurrence
 
+            self._set_selection(
+                self.indexes_of_occurrences[old_occurrence_index][0], 
+                self.indexes_of_occurrences[old_occurrence_index][1]
+            )
+
             self.cursor.insertText(self.ui.line_replace.text())
 
             self.find_event()
@@ -454,8 +459,7 @@ class FindAndReplaceWidget:
     def _show_occurrence(self, begin: int, end: int):
         self._block_show_occurrence()
 
-        self.cursor.setPosition(begin, QTextCursor.MoveAnchor)
-        self.cursor.setPosition(end, QTextCursor.KeepAnchor)
+        self._set_selection(begin, end)
 
         self.block_format.setBackground(self.cursor.charFormat().background())
         self.block_format.setFontPointSize(self.cursor.charFormat().fontPointSize())
@@ -467,6 +471,10 @@ class FindAndReplaceWidget:
         self.text_edit.textCursor().mergeCharFormat(self.show_format)
 
         self._show_count_occurrences()
+    
+    def _set_selection(self, begin: int, end: int):
+        self.cursor.setPosition(begin, QTextCursor.MoveAnchor)
+        self.cursor.setPosition(end, QTextCursor.KeepAnchor)
 
     def _block_show_occurrence(self):
         self.text_edit.setTextCursor(self.cursor)

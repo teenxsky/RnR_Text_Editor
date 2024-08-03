@@ -21,7 +21,7 @@ from PySide6.QtWidgets import (QApplication, QButtonGroup, QCheckBox, QComboBox,
     QLabel, QLineEdit, QMainWindow, QMenu,
     QMenuBar, QPushButton, QScrollArea, QSizePolicy,
     QSpacerItem, QSpinBox, QVBoxLayout, QWidget)
-from src.rc import resources
+from rc import resources
 
 class Ui_MainWindow(object):
     def setupUi(self, MainWindow):
@@ -198,6 +198,7 @@ class Ui_MainWindow(object):
 
         self.combo_box_styles = QComboBox(self.frame_tools)
         self.combo_box_styles.setObjectName(u"combo_box_styles")
+        self.combo_box_styles.setMinimumSize(QSize(200, 0))
         font1 = QFont()
         font1.setPointSize(12)
         self.combo_box_styles.setFont(font1)
@@ -228,13 +229,6 @@ class Ui_MainWindow(object):
 "	width: 12px;\n"
 "	border-radius: 4px;\n"
 "	margin-top: 2px;\n"
-"}\n"
-"\n"
-"QComboBox QAbstractItemView {\n"
-"	selection-background-color: rgb(70, 140, 255);\n"
-"	selection-color: white;\n"
-"	background-color: rgb(244, 244, 244);\n"
-"	color: rgb(84, 84, 84);\n"
 "}\n"
 "")
 

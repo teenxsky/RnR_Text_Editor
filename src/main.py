@@ -1239,7 +1239,7 @@ class TextEditor(Ui_MainWindow, QMainWindow):
         )
         is_italic = self.text_edit.fontItalic()
         is_underline = self.text_edit.fontUnderline()
-        color = self.text_edit.textColor().value()
+        color = self.text_edit.textColor().name()
         alignment = self.text_edit.alignment()
 
         style_number = 1
@@ -1521,7 +1521,7 @@ class TextEditor(Ui_MainWindow, QMainWindow):
             self.ui.combo_box_styles.setCurrentIndex(new_level)
 
         self.ui.combo_box_fonts.setCurrentFont(self.text_edit.currentFont())
-        self.ui.spin_box_size.setValue(int(self.text_edit.fontPointSize()))
+        self.ui.spin_box_size.setValue(self.text_edit.textCursor().charFormat().font().pointSize())
 
         self.ui.button_bold.setChecked(self.text_edit.fontWeight() == QFont.Weight.Bold)
         self.ui.action_bold.setChecked(self.text_edit.fontWeight() == QFont.Weight.Bold)
